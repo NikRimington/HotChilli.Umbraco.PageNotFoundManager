@@ -1,12 +1,12 @@
-﻿using HCS.PageNotFoundManager.Core.Config;
-using HCS.PageNotFoundManager.Core.Models;
+﻿using HC.PageNotFoundManager.Core.Config;
+using HC.PageNotFoundManager.Core.Models;
 using System;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Serialization;
 
-namespace HCS.PageNotFoundManager.Core.Caching
+namespace HC.PageNotFoundManager.Core.Caching
 {
     public class PageNotFoundCacheRefresher : PayloadCacheRefresherBase<CacheRefresherNotification, PageNotFoundRequest>
     {

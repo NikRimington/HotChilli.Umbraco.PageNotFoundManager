@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <Version>1.0.0</Version>
+        <InformationalVersion>1.0.0</InformationalVersion>
+        <TargetFramework>net5.0</TargetFramework>
+        <Authors>Nik Rimington</Authors>
+        <ContentTargetFolders>.</ContentTargetFolders>
+        <Product>HotChilli.Umbraco.PageNotFound</Product>
+        <PackageId>HotChilli.Umbraco.PageNotFound</PackageId>
+        <Title>HotChilli.Umbraco.PageNotFound</Title>
+        <Description>Umbraco packaged for setting 404 response pages.</Description>
+        <Product>HotChilli.Umbraco.PageNotFound</Product>
+        <PackageTags>umbraco plugin package</PackageTags>
+        <PackageProjectUrl>https://github.com/NikRimington/HCS.Umbraco.PageNotFoundManager</PackageProjectUrl>
+        <PackageIcon>logo.png</PackageIcon>
+        <PackageIconUrl>https://raw.githubusercontent.com/NikRimington/HCS.Umbraco.PageNotFoundManager/main/docs/img/logo.png</PackageIconUrl>
+        <RepositoryUrl>https://github.com/NikRimington/HCS.Umbraco.PageNotFoundManager</RepositoryUrl>
+        <RepositoryType>Git</RepositoryType>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <Content Include="App_Plugins\HC.PageNotFound\**\*.*">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+        <None Include="build\**\*.*">
+            <Pack>True</Pack>
+            <PackagePath>buildTransitive</PackagePath>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\HC.PageNotFoundManager.Core\HC.PageNotFoundManager.Core.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="../../docs/img/logo.png" Pack="true" PackPath="\" />
+        <None Include="../../LICENSE" Pack="true" PackPath="" />
+    </ItemGroup>
+</Project>

@@ -1,4 +1,4 @@
-﻿namespace HCS.PageNotFoundManager.Core.Models
+﻿namespace HC.PageNotFoundManager.Core.Models
 {
     public class PageNotFoundRequest
     {

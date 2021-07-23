@@ -1,8 +1,8 @@
-﻿using HCS.PageNotFoundManager.Core.Models;
+﻿using HC.PageNotFoundManager.Core.Models;
 using System;
 using Umbraco.Cms.Core.Cache;
 
-namespace HCS.PageNotFoundManager.Core.Caching
+namespace HC.PageNotFoundManager.Core.Caching
 {
     public static class DistributedCacheExtensions
     {

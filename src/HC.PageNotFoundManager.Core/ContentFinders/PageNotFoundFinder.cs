@@ -1,4 +1,4 @@
-﻿using HCS.PageNotFoundManager.Core.Config;
+﻿using HC.PageNotFoundManager.Core.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
 
-namespace HCS.PageNotFoundManager.Core.ContentFinders
+namespace HC.PageNotFoundManager.Core.ContentFinders
 {
     public class PageNotFoundFinder : IContentLastChanceFinder
     {

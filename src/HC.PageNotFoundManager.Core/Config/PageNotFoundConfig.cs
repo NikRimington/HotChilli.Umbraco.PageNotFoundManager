@@ -1,5 +1,4 @@
-﻿using HCS.PageNotFoundManager.Core.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Cms.Core.Cache;
@@ -7,7 +6,7 @@ using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 
-namespace HCS.PageNotFoundManager.Core.Config
+namespace HC.PageNotFoundManager.Core.Config
 {
     public class PageNotFoundConfig : IPageNotFoundConfig
     {
@@ -45,12 +44,10 @@ namespace HCS.PageNotFoundManager.Core.Config
 
         public void SetNotFoundPage(int parentId, int pageNotFoundId, bool refreshCache)
         {
-            using (var umbracoContext = umbracoContextFactory.EnsureUmbracoContext())
-            {
-                var parentPage = umbracoContext.UmbracoContext.Content.GetById(parentId);
-                var pageNotFoundPage = umbracoContext.UmbracoContext.Content.GetById(pageNotFoundId);
-                SetNotFoundPage(parentPage.Key, pageNotFoundPage != null ? pageNotFoundPage.Key : Guid.Empty, refreshCache);
-            }
+            using var umbracoContext = umbracoContextFactory.EnsureUmbracoContext();
+            var parentPage = umbracoContext.UmbracoContext.Content.GetById(parentId);
+            var pageNotFoundPage = umbracoContext.UmbracoContext.Content.GetById(pageNotFoundId);
+            SetNotFoundPage(parentPage.Key, pageNotFoundPage != null ? pageNotFoundPage.Key : Guid.Empty, refreshCache);
         }
 
         public void SetNotFoundPage(Guid parentKey, Guid pageNotFoundKey, bool refreshCache)
@@ -59,11 +56,11 @@ namespace HCS.PageNotFoundManager.Core.Config
             using (var scope = scopeProvider.CreateScope())
             {
                 var db = scope.Database;
-                var page = db.Query<PageNotFound>().Where(p => p.ParentId == parentKey).FirstOrDefault();
+                var page = db.Query<Models.PageNotFound>().Where(p => p.ParentId == parentKey).FirstOrDefault();
                 if (page == null && !Guid.Empty.Equals(pageNotFoundKey))
                 {
                     // create the page
-                    db.Insert(new PageNotFound { ParentId = parentKey, NotFoundPageId = pageNotFoundKey });
+                    db.Insert(new Models.PageNotFound { ParentId = parentKey, NotFoundPageId = pageNotFoundKey });
                 }
                 else if (page != null)
                 {
@@ -73,7 +70,7 @@ namespace HCS.PageNotFoundManager.Core.Config
                     {
                         // update the existing page
                         page.NotFoundPageId = pageNotFoundKey;
-                        db.Update(PageNotFound.TableName, "ParentId", page);
+                        db.Update(Models.PageNotFound.TableName, "ParentId", page);
                     }
                 }
                 scope.Complete();
@@ -89,20 +86,20 @@ namespace HCS.PageNotFoundManager.Core.Config
             appPolicyCache.Insert(CacheKey, LoadFromDb);
         }
 
-        private List<PageNotFound> ConfiguredPages
+        private List<Models.PageNotFound> ConfiguredPages
         {
             get
             {
-                var us = (List<PageNotFound>)appPolicyCache.Get(CacheKey, LoadFromDb);
+                var us = (List<Models.PageNotFound>)appPolicyCache.Get(CacheKey, LoadFromDb);
                 return us;
             }
         }
 
-        private List<PageNotFound> LoadFromDb()
+        private List<Models.PageNotFound> LoadFromDb()
         {
             using var scope = scopeProvider.CreateScope(autoComplete: true);
-            var sql = scope.SqlContext.Sql().Select("*").From<PageNotFound>();
-            var pages = scope.Database.Fetch<PageNotFound>(sql);
+            var sql = scope.SqlContext.Sql().Select("*").From<Models.PageNotFound>();
+            var pages = scope.Database.Fetch<Models.PageNotFound>(sql);
             scope.Complete();
             return pages;
         }

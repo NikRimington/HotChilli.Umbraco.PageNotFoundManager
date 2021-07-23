@@ -1,13 +1,13 @@
-﻿using HCS.PageNotFoundManager.Core.Caching;
-using HCS.PageNotFoundManager.Core.Config;
-using HCS.PageNotFoundManager.Core.Models;
+﻿using HC.PageNotFoundManager.Core.Caching;
+using HC.PageNotFoundManager.Core.Config;
+using HC.PageNotFoundManager.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Web.BackOffice.Controllers;
 using Umbraco.Cms.Web.Common.Attributes;
 
-namespace HCS.PageNotFoundManager.Core.Backoffice
+namespace HC.PageNotFoundManager.Core.Backoffice
 {
     [PluginController(Constants.BackOffice)]
     public class MenuController : UmbracoAuthorizedJsonController

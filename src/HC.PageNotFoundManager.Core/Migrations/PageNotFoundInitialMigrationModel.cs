@@ -2,16 +2,15 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace HCS.PageNotFoundManager.Core.Models
+namespace HC.PageNotFoundManager.Core.Migrations
 {
     [TableName(TableName)]
-
     [PrimaryKey("ParentId", AutoIncrement = false)]
-    public class PageNotFound
+    public sealed class PageNotFoundInitialMigrationModel
     {
 
         [IgnoreDataMember]
-        public const string TableName = "PageNotFoundManager.Config";
+        public const string TableName = "PageNotFoundManagerConfig";
 
         [Column("ParentId")]
         public Guid ParentId { get; set; }
@@ -20,4 +19,5 @@ namespace HCS.PageNotFoundManager.Core.Models
         public Guid NotFoundPageId { get; set; }
 
     }
+
 }
