@@ -37,7 +37,7 @@ namespace HC.PageNotFoundManager.Core.Backoffice
 
             var menuItem = new MenuItem(Constants.MenuAlias, Constants.MenuLabel)
             {
-                Icon = Umbraco.Cms.Core.Constants.Icons.Content,
+                Icon = "alert red",
                 SeparatorBefore = true
             };
 
