@@ -1,4 +1,4 @@
-﻿(function() {
+﻿(function () {
     "use strict";
     function PageNotFoundManagerDialog($scope, pageNotFoundManagerResource, navigationService, userService, entityResource, iconHelper) {
         var node = $scope.currentNode;
@@ -34,7 +34,7 @@
                 const val = parseInt(resp.data);
                 if (!isNaN(val) && angular.isNumber(val) && val > 0) {
                     $scope.pageNotFoundId = val;
-                    entityResource.getById(val, "Document").then(function(item) {
+                    entityResource.getById(val, "Document").then(function (item) {
                         item.icon = iconHelper.convertFromLegacyIcon(item.icon);
                         $scope.pageNotFoundNode = item;
                     });
@@ -43,6 +43,8 @@
                 initNotFound = true;
                 vm.busy = !(initNotFound && initUserDetails);
             });
+
+            vm.close = close;
         }
 
 
@@ -69,7 +71,11 @@
             }
         }
 
-        $scope.hideSearch = function() {
+        function close() {           
+            $scope.nav.hideDialog();
+        }
+
+        $scope.hideSearch = function () {
             $scope.searchInfo.showSearch = false;
             $scope.searchInfo.searchFromId = null;
             $scope.searchInfo.searchFromName = null;
@@ -77,18 +83,18 @@
         };
 
         // method to select a search result
-        $scope.selectResult = function(evt, result) {
+        $scope.selectResult = function (evt, result) {
             result.selected = result.selected === true ? false : true;
             nodeSelectHandler(evt, { event: evt, node: result });
         };
 
         //callback when there are search results
-        $scope.onSearchResults = function(results) {
+        $scope.onSearchResults = function (results) {
             $scope.searchInfo.results = results;
             $scope.searchInfo.showSearch = true;
         };
 
-        $scope.setNotFoundPage = function() {
+        $scope.setNotFoundPage = function () {
 
             vm.busy = true;
             $scope.error = false;
@@ -101,11 +107,11 @@
             if ($scope.target !== undefined && $scope.target !== null)
                 notFoundPageId = $scope.target.id;
 
-            pageNotFoundManagerResource.setNotFoundPage(parentId, notFoundPageId).then(function() {
+            pageNotFoundManagerResource.setNotFoundPage(parentId, notFoundPageId).then(function () {
                 $scope.error = false;
                 $scope.success = true;
                 vm.busy = false;
-            }, function(err) {
+            }, function (err) {
                 $scope.success = false;
                 $scope.error = err;
                 vm.busy = false;
@@ -120,7 +126,7 @@
             }
         }
 
-        $scope.onTreeInit = function() {
+        $scope.onTreeInit = function () {
             $scope.dialogTreeApi.callbacks.treeLoaded(treeLoadedHandler);
             $scope.dialogTreeApi.callbacks.treeNodeSelect(nodeSelectHandler);
             $scope.dialogTreeApi.callbacks.treeNodeExpanded(nodeExpandedHandler);
@@ -130,6 +136,6 @@
     }
 
     angular.module("umbraco").controller("hc.pagenotfound.dialog.controller",
-        ['$scope', 'hc.pageNotFoundManagerResource', 'notificationsService',
-         'userService', 'entityResource', 'iconHelper', PageNotFoundManagerDialog]);
+        ['$scope', 'hc.pageNotFoundManagerResource', 'navigationService',
+            'userService', 'entityResource', 'iconHelper', PageNotFoundManagerDialog]);
 })();
