@@ -3,7 +3,7 @@ using Umbraco.Cms.Core.DependencyInjection;
 
 namespace HC.PageNotFoundManager.Core.Startup
 {    
-    public class StartupComposer : IUserComposer
+    public class StartupComposer : IComposer
     {
         public void Compose(IUmbracoBuilder builder)
         {
