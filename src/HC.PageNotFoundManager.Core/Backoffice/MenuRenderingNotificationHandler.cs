@@ -28,7 +28,7 @@ namespace HC.PageNotFoundManager.Core.Backoffice
         public void Handle(MenuRenderingNotification notification)
         {
             if (notification.TreeAlias != Umbraco.Cms.Core.Constants.Trees.Content
-                && int.TryParse(notification.NodeId, out var nodeId) && nodeId <= 0) return;
+                || int.TryParse(notification.NodeId, out var nodeId) && nodeId <= 0) return;
 
             if (backOfficeSecurity.BackOfficeSecurity.CurrentUser == null) return;
 
