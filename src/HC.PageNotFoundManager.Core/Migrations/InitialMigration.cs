@@ -28,22 +28,33 @@ namespace HC.PageNotFoundManager.Core.Migrations
         }
     }
 
-    public class PageNotFoundMigrationPlan : MigrationPlan
+    public class MigrateV8DataMigration : MigrationBase
     {
+        public const string MigrationName = "page-not-found-manager-migration-legacy-data";
+        private readonly ILogger<MigrateV8DataMigration> logger;
 
-        public PageNotFoundMigrationPlan()
-            : base("PageNotFoundManager") => DefinePlan();
-
-        /// <inheritdoc/>
-        public override string InitialState => "{pagenotfound-init-state}";
-
-        /// <summary>
-        /// Defines the plan.
-        /// </summary>
-        protected void DefinePlan()
+        public MigrateV8DataMigration(IMigrationContext context, ILogger<MigrateV8DataMigration> logger) : base(context)
         {
-            From("{pagenotfound-init-state}")
-                .To<InitialMigration>("{pagenotfound-init-complete}");
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+        }
+
+        protected override void Migrate()
+        {
+            logger.LogDebug("Starting migration - {migrationName}", MigrationName);
+
+            if (TableExists("pageNotFoundConfig"))
+                MigrateLegacyData();
+        }
+
+        private void MigrateLegacyData()
+        {
+            var sql = this.Sql().Select("unP.uniqueId as ParentId", "unF.uniqueId as NotFoundPageId").From("pageNotFoundConfig as org")
+                .LeftJoin("umbracoNode as unP").On("org.ParentId = unP.id")
+                .LeftJoin("umbracoNode as unF").On("org.NotFoundPageId = unF.id");
+
+            var toMigrate = Database.Fetch<PageNotFoundInitialMigrationModel>(sql);
+            Database.InsertBatch(toMigrate);                
         }
     }
 
