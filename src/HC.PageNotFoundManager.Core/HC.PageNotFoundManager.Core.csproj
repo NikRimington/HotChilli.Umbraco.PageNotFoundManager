@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <AssemblyVersion>1.0.0</AssemblyVersion>
@@ -23,11 +23,11 @@
     </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Umbraco.Cms.Core" Version="9.0.0-rc003" />
-    <PackageReference Include="Umbraco.Cms.Infrastructure" Version="9.0.0-rc003" />
-    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="9.0.0-rc003" />
-    <PackageReference Include="Umbraco.Cms.Web.Common" Version="9.0.0-rc003" />
-    <PackageReference Include="Umbraco.Cms.Web.Website" Version="9.0.0-rc003" />
+    <PackageReference Include="Umbraco.Cms.Core" Version="9.0.0-rc004" />
+    <PackageReference Include="Umbraco.Cms.Infrastructure" Version="9.0.0-rc004" />
+    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="9.0.0-rc004" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="9.0.0-rc004" />
+    <PackageReference Include="Umbraco.Cms.Web.Website" Version="9.0.0-rc004" />
   </ItemGroup>
     <ItemGroup>
         <None Include="../../docs/img/logo.png" Pack="true" PackPath="\" />

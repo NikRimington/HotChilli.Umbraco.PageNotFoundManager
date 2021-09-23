@@ -39,6 +39,6 @@
         <None Include="../../LICENSE" Pack="true" PackPath="" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Umbraco.Cms.Core" Version="9.0.0-rc003" />
+        <PackageReference Include="Umbraco.Cms.Core" Version="9.0.0-rc004" />
     </ItemGroup>
 </Project>
