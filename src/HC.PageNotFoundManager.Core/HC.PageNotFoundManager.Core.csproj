@@ -25,9 +25,9 @@
   <ItemGroup>
     <PackageReference Include="Umbraco.Cms.Core" Version="9.1.2" />
     <PackageReference Include="Umbraco.Cms.Infrastructure" Version="9.1.2" />
-    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="9.0.1" />
-    <PackageReference Include="Umbraco.Cms.Web.Common" Version="9.0.1" />
-    <PackageReference Include="Umbraco.Cms.Web.Website" Version="9.0.1" />
+    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="9.1.2" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="9.1.2" />
+    <PackageReference Include="Umbraco.Cms.Web.Website" Version="9.1.2" />
   </ItemGroup>
     <ItemGroup>
         <None Include="../../docs/img/logo.png" Pack="true" PackPath="\" />
