@@ -3,7 +3,6 @@
     <PropertyGroup>
         <AssemblyVersion>1.0.0</AssemblyVersion>
         <Version>1.0.0</Version>
-        <VersionSuffix>beta-005</VersionSuffix>
         <InformationalVersion>1.0.0</InformationalVersion>
         <TargetFramework>net5.0</TargetFramework>
         <Authors>Nik Rimington</Authors>
