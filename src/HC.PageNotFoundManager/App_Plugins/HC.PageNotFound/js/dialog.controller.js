@@ -3,6 +3,11 @@
     function PageNotFoundManagerDialog($scope, pageNotFoundManagerResource, navigationService, userService, entityResource, iconHelper) {
         var node = $scope.currentNode;
         var vm = this;
+        vm.status = {
+            loaded: true,
+            busy: true,
+            existing: false
+        };
         var initUserDetails;
         var initNotFound;
         $scope.nav = navigationService;
@@ -27,7 +32,7 @@
                 $scope.treeModel.hideHeader =
                     userData.startContentIds.length > 0 && userData.startContentIds.indexOf(-1) === -1;
                 initUserDetails = true;
-                vm.busy = !(initNotFound && initUserDetails);
+                vm.status.busy = !(initNotFound && initUserDetails);
             });
 
             pageNotFoundManagerResource.getNotFoundPage(node.id).then((resp) => {
@@ -37,11 +42,12 @@
                     entityResource.getById(val, "Document").then(function (item) {
                         item.icon = iconHelper.convertFromLegacyIcon(item.icon);
                         $scope.pageNotFoundNode = item;
+                        vm.status.existing = item != undefined;
                     });
                 }
-                vm.loaded = true;
+                vm.status.loaded = true;
                 initNotFound = true;
-                vm.busy = !(initNotFound && initUserDetails);
+                vm.status.busy = !(initNotFound && initUserDetails);
             });
 
             vm.close = close;
@@ -96,29 +102,36 @@
 
         $scope.setNotFoundPage = function () {
 
-            vm.busy = true;
+            vm.status.busy = true;
             $scope.error = false;
 
             var parentId = 0;
             if (node !== null)
                 parentId = node.id;
 
-            var notFoundPageId = 0;
+            var notFoundPageId = $scope.pageNotFoundId;
             if ($scope.target !== undefined && $scope.target !== null)
                 notFoundPageId = $scope.target.id;
 
-            pageNotFoundManagerResource.setNotFoundPage(parentId, notFoundPageId).then(function () {
-                $scope.error = false;
-                $scope.success = true;
-                vm.busy = false;
-            }, function (err) {
-                $scope.success = false;
-                $scope.error = err;
-                vm.busy = false;
-            });
+            if(notFoundPageId != $scope.pageNotFoundId || notFoundPageId == 0 )   
+                pageNotFoundManagerResource.setNotFoundPage(parentId, notFoundPageId).then(function () {
+                    $scope.error = false;
+                    $scope.success = true;
+                    vm.status.busy = false;
+                }, function (err) {
+                    $scope.success = false;
+                    $scope.error = err;
+                    vm.status.busy = false;
+                });
+            else
+                close();
         };
 
-        $scope.clear = () => $scope.pageNotFoundNode = null;
+        $scope.clear = function() {
+            $scope.pageNotFoundNode = null;
+            vm.status.existing = false;
+            $scope.pageNotFoundId = 0;
+        } 
 
         function treeLoadedHandler() {
             if ($scope.source && $scope.source.path) {

@@ -37,7 +37,7 @@ namespace HC.PageNotFoundManager.Core.Backoffice
 
             var menuItem = new MenuItem(Constants.MenuAlias, Constants.MenuLabel)
             {
-                Icon = "alert red",
+                Icon = "directions color-blue",
                 SeparatorBefore = true
             };
 
