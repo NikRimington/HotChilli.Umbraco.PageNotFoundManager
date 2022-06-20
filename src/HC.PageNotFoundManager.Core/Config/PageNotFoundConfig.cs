@@ -11,49 +11,50 @@ namespace HC.PageNotFoundManager.Core.Config
     public class PageNotFoundConfig : IPageNotFoundConfig
     {
         private const string CacheKey = "PageNotFoundConfig";
-        private readonly IScopeProvider scopeProvider;
-        private readonly IUmbracoContextFactory umbracoContextFactory;
-        private readonly IAppPolicyCache appPolicyCache;
+        private readonly IScopeProvider _scopeProvider;
+        private readonly IUmbracoContextFactory _umbracoContextFactory;
+        private readonly IAppPolicyCache _appPolicyCache;
 
         public PageNotFoundConfig(IScopeProvider scopeProvider, IUmbracoContextFactory umbracoContextFactory, IAppPolicyCache appPolicyCache)
         {
-            this.scopeProvider = scopeProvider ?? throw new ArgumentNullException(nameof(scopeProvider));
-            this.umbracoContextFactory = umbracoContextFactory ?? throw new ArgumentNullException(nameof(umbracoContextFactory));
-            this.appPolicyCache = appPolicyCache ?? throw new ArgumentNullException(nameof(appPolicyCache));
+            this._scopeProvider = scopeProvider ?? throw new ArgumentNullException(nameof(scopeProvider));
+            this._umbracoContextFactory = umbracoContextFactory ?? throw new ArgumentNullException(nameof(umbracoContextFactory));
+            this._appPolicyCache = appPolicyCache ?? throw new ArgumentNullException(nameof(appPolicyCache));
         }
 
         public int GetNotFoundPage(int parentId)
         {
-            using var scope = scopeProvider.CreateScope(autoComplete: true);
-            using var umbracoContext = umbracoContextFactory.EnsureUmbracoContext();
-            var parentNode = umbracoContext.UmbracoContext.Content.GetById(parentId);
+            using var scope = _scopeProvider.CreateScope(autoComplete: true);
+            using var umbracoContext = _umbracoContextFactory.EnsureUmbracoContext();
+            var parentNode = umbracoContext.UmbracoContext.Content?.GetById(parentId);
             return parentNode != null ? GetNotFoundPage(parentNode.Key) : 0;
 
         }
 
         public int GetNotFoundPage(Guid parentKey)
         {
-            using var scope = scopeProvider.CreateScope(autoComplete: true);
-            using var umbracoContext = umbracoContextFactory.EnsureUmbracoContext();
+            using var scope = _scopeProvider.CreateScope(autoComplete: true);
+            using var umbracoContext = _umbracoContextFactory.EnsureUmbracoContext();
 
             var x = ConfiguredPages.FirstOrDefault(p => p.ParentId == parentKey);
-            var page = x != null ? umbracoContext.UmbracoContext.Content.GetById(x.NotFoundPageId) : null;
-            return page != null ? page.Id : 0;
+            var page = x != null ? umbracoContext.UmbracoContext.Content?.GetById(x.NotFoundPageId) : null;
+            return page?.Id ?? 0;
 
         }
 
         public void SetNotFoundPage(int parentId, int pageNotFoundId, bool refreshCache)
         {
-            using var umbracoContext = umbracoContextFactory.EnsureUmbracoContext();
-            var parentPage = umbracoContext.UmbracoContext.Content.GetById(parentId);
-            var pageNotFoundPage = umbracoContext.UmbracoContext.Content.GetById(pageNotFoundId);
-            SetNotFoundPage(parentPage.Key, pageNotFoundPage != null ? pageNotFoundPage.Key : Guid.Empty, refreshCache);
+            using var umbracoContext = _umbracoContextFactory.EnsureUmbracoContext();
+            var parentPage = umbracoContext.UmbracoContext.Content?.GetById(parentId);
+            var pageNotFoundPage = umbracoContext.UmbracoContext.Content?.GetById(pageNotFoundId);
+            if (parentPage != null) 
+                SetNotFoundPage(parentPage.Key, pageNotFoundPage?.Key ?? Guid.Empty, refreshCache);
         }
 
         public void SetNotFoundPage(Guid parentKey, Guid pageNotFoundKey, bool refreshCache)
         {
 
-            using (var scope = scopeProvider.CreateScope())
+            using (var scope = _scopeProvider.CreateScope())
             {
                 var db = scope.Database;
                 var page = db.Query<Models.PageNotFound>().Where(p => p.ParentId == parentKey).FirstOrDefault();
@@ -82,22 +83,22 @@ namespace HC.PageNotFoundManager.Core.Config
 
         public void RefreshCache()
         {
-            appPolicyCache.ClearByKey(CacheKey);
-            appPolicyCache.Insert(CacheKey, LoadFromDb);
+            _appPolicyCache.ClearByKey(CacheKey);
+            _appPolicyCache.Insert(CacheKey, LoadFromDb);
         }
 
         private List<Models.PageNotFound> ConfiguredPages
         {
             get
             {
-                var us = (List<Models.PageNotFound>)appPolicyCache.Get(CacheKey, LoadFromDb);
+                var us = (List<Models.PageNotFound>)_appPolicyCache.Get(CacheKey, LoadFromDb);
                 return us;
             }
         }
 
         private List<Models.PageNotFound> LoadFromDb()
         {
-            using var scope = scopeProvider.CreateScope(autoComplete: true);
+            using var scope = _scopeProvider.CreateScope(autoComplete: true);
             var sql = scope.SqlContext.Sql().Select("*").From<Models.PageNotFound>();
             var pages = scope.Database.Fetch<Models.PageNotFound>(sql);
             scope.Complete();
