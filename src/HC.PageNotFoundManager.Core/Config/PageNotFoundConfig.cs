@@ -17,9 +17,9 @@ namespace HC.PageNotFoundManager.Core.Config
 
         public PageNotFoundConfig(IScopeProvider scopeProvider, IUmbracoContextFactory umbracoContextFactory, IAppPolicyCache appPolicyCache)
         {
-            this._scopeProvider = scopeProvider ?? throw new ArgumentNullException(nameof(scopeProvider));
-            this._umbracoContextFactory = umbracoContextFactory ?? throw new ArgumentNullException(nameof(umbracoContextFactory));
-            this._appPolicyCache = appPolicyCache ?? throw new ArgumentNullException(nameof(appPolicyCache));
+            _scopeProvider = scopeProvider ?? throw new ArgumentNullException(nameof(scopeProvider));
+            _umbracoContextFactory = umbracoContextFactory ?? throw new ArgumentNullException(nameof(umbracoContextFactory));
+            _appPolicyCache = appPolicyCache ?? throw new ArgumentNullException(nameof(appPolicyCache));
         }
 
         public int GetNotFoundPage(int parentId)

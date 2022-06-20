@@ -22,11 +22,11 @@ namespace HC.PageNotFoundManager.Core.Startup
             IRuntimeState runtimeState, IScopeProvider scopeProvider, IKeyValueService keyValueService, IMigrationPlanExecutor migrationPlanExecutor)
         {
             
-            this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this._runtimeState = runtimeState ?? throw new ArgumentNullException(nameof(runtimeState));
-            this._scopeProvider = scopeProvider ?? throw new ArgumentNullException(nameof(scopeProvider));
-            this._keyValueService = keyValueService ?? throw new ArgumentNullException(nameof(keyValueService));
-            this._migrationPlanExecutor = migrationPlanExecutor ?? throw new ArgumentNullException(nameof(migrationPlanExecutor));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _runtimeState = runtimeState ?? throw new ArgumentNullException(nameof(runtimeState));
+            _scopeProvider = scopeProvider ?? throw new ArgumentNullException(nameof(scopeProvider));
+            _keyValueService = keyValueService ?? throw new ArgumentNullException(nameof(keyValueService));
+            _migrationPlanExecutor = migrationPlanExecutor ?? throw new ArgumentNullException(nameof(migrationPlanExecutor));
         }
 
         public void Handle(UmbracoApplicationStartingNotification notification)

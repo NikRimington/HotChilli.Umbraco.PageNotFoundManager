@@ -13,15 +13,15 @@ namespace HC.PageNotFoundManager.Core.ContentFinders
 {
     public class PageNotFoundFinder : IContentLastChanceFinder
     {
-        private readonly IDomainService domainService;
-        private readonly IUmbracoContextFactory umbracoContextFactory;
-        private readonly IPageNotFoundConfig config;
+        private readonly IDomainService _domainService;
+        private readonly IUmbracoContextFactory _umbracoContextFactory;
+        private readonly IPageNotFoundConfig _config;
 
         public PageNotFoundFinder(IDomainService domainService, IUmbracoContextFactory umbracoContextFactory, IPageNotFoundConfig config)
         {
-            this.domainService = domainService ?? throw new ArgumentNullException(nameof(domainService));
-            this.umbracoContextFactory = umbracoContextFactory ?? throw new ArgumentNullException(nameof(umbracoContextFactory));
-            this.config = config ?? throw new ArgumentNullException(nameof(config));
+            _domainService = domainService ?? throw new ArgumentNullException(nameof(domainService));
+            _umbracoContextFactory = umbracoContextFactory ?? throw new ArgumentNullException(nameof(umbracoContextFactory));
+            _config = config ?? throw new ArgumentNullException(nameof(config));
         }
         public async Task<bool> TryFindContent(IPublishedRequestBuilder request)
         {
@@ -31,7 +31,7 @@ namespace HC.PageNotFoundManager.Core.ContentFinders
             //get domain name from Uri
             // find umbraco home node for uri's domain, and get the id of the node it is set on
 
-            var domains = domainService.GetAll(true)?.ToList() ?? domainService.GetAll(true).ToList();
+            var domains = _domainService.GetAll(true)?.ToList() ?? _domainService.GetAll(true).ToList();
             var domainRoutePrefixId = String.Empty;
             if (domains.Any())
             {
@@ -53,7 +53,7 @@ namespace HC.PageNotFoundManager.Core.ContentFinders
                     domainRoutePrefixId = domain.RootContentId.ToString();
                 }
             }
-            using (var umbracoContext = umbracoContextFactory.EnsureUmbracoContext())
+            using (var umbracoContext = _umbracoContextFactory.EnsureUmbracoContext())
             {
                 var closestContent = umbracoContext.UmbracoContext.Content.GetByRoute(domainRoutePrefixId + uri.ToString(), false, culture: request?.Culture);
                 while (closestContent == null)
@@ -61,7 +61,7 @@ namespace HC.PageNotFoundManager.Core.ContentFinders
                     uri = uri.Remove(uri.Length - 1, 1);
                     closestContent = umbracoContext.UmbracoContext.Content.GetByRoute(domainRoutePrefixId + uri.ToString(), false, culture: request?.Culture);
                 }
-                var nfp = config.GetNotFoundPage(closestContent.Id);
+                var nfp = _config.GetNotFoundPage(closestContent.Id);
 
                 while (nfp == 0)
                 {
@@ -69,7 +69,7 @@ namespace HC.PageNotFoundManager.Core.ContentFinders
 
                     if (closestContent == null) return false;
 
-                    nfp = config.GetNotFoundPage(closestContent.Id);
+                    nfp = _config.GetNotFoundPage(closestContent.Id);
                 }
 
                 var content = umbracoContext.UmbracoContext.Content.GetById(nfp);
