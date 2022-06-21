@@ -1,12 +1,12 @@
 ﻿<div ng-controller="hc.pagenotfound.dialog.controller as vm">
     <div class="umb-dialog-body" ng-cloak>
-        <div class="umb-pane" ng-show="vm.busy || !vm.loaded">
+        <div class="umb-pane" ng-show="vm.status.busy || !vm.status.loaded">
             <p class="abstract">
                 Choose the 404 page for <strong>{{currentNode.name}}</strong> and child pages
             </p>
             <umb-load-indicator></umb-load-indicator>
         </div>
-        <div class="umb-pane" ng-hide="!vm.loaded">
+        <div class="umb-pane" ng-hide="!vm.status.loaded">
 
             <div ng-show="error">
                 <div class="alert alert-error">
@@ -17,14 +17,15 @@
 
             <div ng-show="success">
                 <div class="alert alert-success">
-                    <strong>{{target.name}}</strong> is set as the 404 page for
+                    <span ng-show="target == undefined">No page</span><strong ng-hide="target == undefined">{{target.name}}</strong> is set as the 404 page for
                     <strong>{{currentNode.name}}</strong> and it's child pages
                 </div>
                 <button class="btn btn-primary" ng-click="vm.close()">Ok</button>
             </div>
 
             <p class="abstract" ng-hide="success">
-                Choose the 404 page for <strong>{{currentNode.name}}</strong> and child pages
+               The current 404 page for <strong>{{currentNode.name}}</strong> and child pages is show below. <br/>
+               <em>Click the cross next to the page name to deselect the current node as the 404.</em>
             </p>
 
             <div ng-if="pageNotFoundNode">
@@ -32,7 +33,7 @@
                     <li>
                         <em class="icon {{pageNotFoundNode.icon}} hover-hide"></em>
                         <a>{{pageNotFoundNode.name}}</a>
-                        <a ng-click="clear()"><em class="icon red icon-delete"></em></a>
+                        <a ng-click="clear()" title="Remove selected 404"><em class="icon red icon-delete"></em></a>
                     </li>
                 </ul>
             </div>
@@ -80,12 +81,20 @@
         </div>
     </div>
 
-    <div class="umb-dialog-footer btn-toolbar umb-btn-toolbar" ng-hide="success || busy">
-        <a class="btn btn-link" ng-click="vm.close()">
-            <localize key="general_cancel">Cancel</localize>
-        </a>
-        <button class="btn btn-primary" ng-click="setNotFoundPage()">
-            <localize key="general_ok">OK</localize>
-        </button>
+    <div class="umb-dialog-footer btn-toolbar umb-btn-toolbar">
+        <div ng-hide="vm.status.existing || success || busy">
+            <a class="btn btn-link" ng-click="vm.close()">
+                <localize key="general_cancel">Cancel</localize>
+            </a>
+            <button class="btn btn-primary" ng-click="setNotFoundPage()">
+                <localize key="general_ok">Save</localize>
+            </button>
+        </div>
+        <div ng-show="vm.status.existing">
+            <button class="btn btn-primary" ng-click="vm.close()">
+                <localize key="general_ok">OK</localize>
+            </button>
+        </div>
     </div>
+    
 </div>
