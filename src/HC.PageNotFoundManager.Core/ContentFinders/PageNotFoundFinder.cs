@@ -23,7 +23,7 @@ namespace HC.PageNotFoundManager.Core.ContentFinders
             this.umbracoContextFactory = umbracoContextFactory ?? throw new ArgumentNullException(nameof(umbracoContextFactory));
             this.config = config ?? throw new ArgumentNullException(nameof(config));
         }
-        public bool TryFindContent(IPublishedRequestBuilder request)
+        public async Task<bool> TryFindContent(IPublishedRequestBuilder request)
         {
 
             var uri = request.AbsolutePathDecoded;
