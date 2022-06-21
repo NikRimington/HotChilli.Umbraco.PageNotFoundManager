@@ -5,7 +5,7 @@
         <Version>1.0.0</Version>
         <VersionSuffix>beta-005</VersionSuffix>
         <InformationalVersion>1.0.0</InformationalVersion>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Authors>Nik Rimington</Authors>
         <ContentTargetFolders>.</ContentTargetFolders>
         <Product>HotChilli.Umbraco.PageNotFound</Product>
@@ -39,6 +39,6 @@
         <None Include="../../LICENSE" Pack="true" PackPath="" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Umbraco.Cms.Core" Version="9.0.0" />
+        <PackageReference Include="Umbraco.Cms.Core" Version="10.0.0" />
     </ItemGroup>
 </Project>
