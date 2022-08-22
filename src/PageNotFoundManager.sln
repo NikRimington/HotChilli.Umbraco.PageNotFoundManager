@@ -3,13 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HC.PageNotFoundManager.Core", "HC.PageNotFoundManager.Core\HC.PageNotFoundManager.Core.csproj", "{0CA20044-8BCC-44FF-93AD-3578036CA6A5}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HC.PageNotFoundManager", "HC.PageNotFoundManager\HC.PageNotFoundManager.csproj", "{705A76EA-F683-4D8C-8138-8AE3E6F14646}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution files", "Solution files", "{5114C3D3-99A7-4A55-8B86-D11292DA5346}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE = LICENSE
+		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
 Global
@@ -18,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0CA20044-8BCC-44FF-93AD-3578036CA6A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0CA20044-8BCC-44FF-93AD-3578036CA6A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0CA20044-8BCC-44FF-93AD-3578036CA6A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0CA20044-8BCC-44FF-93AD-3578036CA6A5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{705A76EA-F683-4D8C-8138-8AE3E6F14646}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{705A76EA-F683-4D8C-8138-8AE3E6F14646}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{705A76EA-F683-4D8C-8138-8AE3E6F14646}.Release|Any CPU.ActiveCfg = Release|Any CPU
