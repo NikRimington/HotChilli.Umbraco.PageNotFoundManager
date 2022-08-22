@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
         <AssemblyVersion>1.0.0</AssemblyVersion>
@@ -13,31 +13,23 @@
         <Description>Umbraco packaged for setting 404 response pages.</Description>
         <Product>HotChilli.Umbraco.PageNotFound</Product>
         <PackageTags>umbraco plugin package</PackageTags>
-        <PackageProjectUrl>https://github.com/NikRimington/HCS.Umbraco.PageNotFoundManager</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/NikRimington/HotChilli.Umbraco.PageNotFoundManager</PackageProjectUrl>
         <PackageIcon>logo.png</PackageIcon>
-        <PackageIconUrl>https://raw.githubusercontent.com/NikRimington/HCS.Umbraco.PageNotFoundManager/main/docs/img/logo.png</PackageIconUrl>
-        <RepositoryUrl>https://github.com/NikRimington/HCS.Umbraco.PageNotFoundManager</RepositoryUrl>
+        <PackageIconUrl>https://raw.githubusercontent.com/NikRimington/HotChilli.Umbraco.PageNotFoundManager/main/docs/img/logo.png</PackageIconUrl>
+        <RepositoryUrl>https://github.com/NikRimington/HotChilli.Umbraco.PageNotFoundManager</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
+
+        <StaticWebAssetBasePath>/App_Plugins/HC.PageNotFound</StaticWebAssetBasePath>
     </PropertyGroup>
-    <ItemGroup>
-        <Content Include="App_Plugins\HC.PageNotFound\**\*.*">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-        </Content>
-        <None Include="build\**\*.*">
-            <Pack>True</Pack>
-            <PackagePath>buildTransitive</PackagePath>
-        </None>
-    </ItemGroup>
-    <ItemGroup>
-      <ProjectReference Include="..\HC.PageNotFoundManager.Core\HC.PageNotFoundManager.Core.csproj" />
-    </ItemGroup>
     <ItemGroup>
         <None Include="../../docs/img/logo.png" Pack="true" PackPath="\" />
         <None Include="../../LICENSE" Pack="true" PackPath="" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Umbraco.Cms.Core" Version="10.0.0" />
+        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="10.0.0" />
+        <PackageReference Include="Umbraco.Cms.Web.Common" Version="10.0.0" />
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="10.0.0" />
     </ItemGroup>
 </Project>
