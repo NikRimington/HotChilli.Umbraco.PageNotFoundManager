@@ -1,13 +1,11 @@
 # Page Not Found Manager
 
-<img src="docs/img/logo.png?raw=true" alt="Page not found" width="250" align="right" />
+<img src="https://raw.githubusercontent.com/NikRimington/HotChilli.Umbraco.PageNotFoundManager/develop/docs/img/logo.png" alt="Page not found" width="250" align="right" />
 
 [![NuGet](https://img.shields.io/nuget/v/HotChilli.Umbraco.PageNotFound.svg)](https://www.nuget.org/packages/HotChilli.Umbraco.PageNotFound/)
 [![Our Umbraco](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.com/packages/backoffice-extensions/hot-chilli-page-not-found-manager/)
 
 ## Getting Started
-
-**This is currently a beta package**
 
 Page Not Found Manager supports Umbraco v9 RC1+.
 
