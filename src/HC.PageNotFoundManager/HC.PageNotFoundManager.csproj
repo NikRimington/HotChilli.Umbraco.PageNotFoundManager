@@ -12,7 +12,7 @@
         <Title>HotChilli.Umbraco.PageNotFound</Title>
         <Description>Umbraco packaged for setting 404 response pages.</Description>
         <Product>HotChilli.Umbraco.PageNotFound</Product>
-        <PackageTags>umbraco plugin package</PackageTags>
+        <PackageTags>umbraco plugin package Umbraco-Marketplace</PackageTags>
         <PackageProjectUrl>https://github.com/NikRimington/HotChilli.Umbraco.PageNotFoundManager</PackageProjectUrl>
         <PackageIcon>logo.png</PackageIcon>
         <PackageIconUrl>https://raw.githubusercontent.com/NikRimington/HotChilli.Umbraco.PageNotFoundManager/main/docs/img/logo.png</PackageIconUrl>
