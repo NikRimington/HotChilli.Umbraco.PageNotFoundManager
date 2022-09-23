@@ -33,7 +33,7 @@ There is currently a plan to investigate and see if this same 404 page can be se
 
 ## Special Thanks
 
-This package is a port of [PageNotFoundManager](https://github.com/TimGeyssens/UmbracoPageNotFoundManager) by [Tim Geyssens](https://twitter.com/timgeyssens) and was created with his permission. The code based used as a point of reference was taken prior to the Licesencing Model change.
+This package is a port of [PageNotFoundManager](https://github.com/TimGeyssens/UmbracoPageNotFoundManager) by [Tim Geyssens](https://twitter.com/timgeyssens) and was created with his permission. The code base used as a point of reference was taken prior to the Licesencing Model change.
 
 ## Credits
 
