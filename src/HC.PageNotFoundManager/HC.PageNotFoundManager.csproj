@@ -31,10 +31,10 @@
 
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<PackageReference Include="Umbraco.Cms.Core" Version="10.0.0" />
-        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="10.0.0" />
-        <PackageReference Include="Umbraco.Cms.Web.Common" Version="10.0.0" />
-        <PackageReference Include="Umbraco.Cms.Web.Website" Version="10.0.0" />
+		<PackageReference Include="Umbraco.Cms.Core" Version="10.8.2" />
+        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="10.8.2" />
+        <PackageReference Include="Umbraco.Cms.Web.Common" Version="10.8.2" />
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="10.8.2" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
@@ -45,9 +45,9 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="Umbraco.Cms.Core" Version="13.0.0" />
-        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="13.0.0" />
-        <PackageReference Include="Umbraco.Cms.Web.Common" Version="13.0.0" />
-        <PackageReference Include="Umbraco.Cms.Web.Website" Version="13.0.0" />
+		<PackageReference Include="Umbraco.Cms.Core" Version="13.0.1" />
+        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="13.0.1" />
+        <PackageReference Include="Umbraco.Cms.Web.Common" Version="13.0.1" />
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="13.0.1" />
 	</ItemGroup>
 </Project>
