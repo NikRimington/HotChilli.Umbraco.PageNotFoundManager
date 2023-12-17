@@ -1,4 +1,4 @@
-name: Build and Release Package
+name: Build and Pack Only
 
 on:
   push:
