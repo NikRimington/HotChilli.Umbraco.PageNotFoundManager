@@ -7,6 +7,9 @@ on:
     branches: ["develop"]
   workflow_dispatch:
 
+env:
+  VERSION: 0.0.0
+
 jobs:
   build:
     runs-on: windows-latest
@@ -46,4 +49,4 @@ jobs:
         run: dotnet build src\HC.PageNotFoundManager\HC.PageNotFoundManager.csproj --configuration Release /p:Version=$VERSION
 
       - name: Pack project
-        run: dotnet pack --output nupkgs /p:PackageVersion=$VERSION .\src\PageNotFoundManager.sln
+        run: dotnet pack --output  --no-build nupkgs /p:PackageVersion=$VERSION .\src\PageNotFoundManager.sln
