@@ -15,11 +15,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set Version Variable
+      - name: Set Version Variable from tag
         if: ${{ github.ref_type == 'tag' }}
         env:
           TAG: ${{ github.ref_name }}
         run: echo "VERSION=${TAG#v}-beta${{github.run_number}}" >> $GITHUB_ENV
+
+      - name: Set Version Variable from tag
+        if: ${{ !(github.ref_type == 'tag') }}
+        env:
+          TAG: ${{ github.ref_name }}
+        run: echo "VERSION=0.1.0-pre${{github.run_number}}" >> $GITHUB_ENV
 
       - name: Setup .NET 6
         uses: actions/setup-dotnet@v2
