@@ -1,0 +1,100 @@
+﻿<div ng-controller="hc.pagenotfound.dialog.controller as vm">
+    <div class="umb-dialog-body" ng-cloak>
+        <div class="umb-pane" ng-show="vm.status.busy || !vm.status.loaded">
+            <p class="abstract">
+                Choose the 404 page for <strong>{{currentNode.name}}</strong> and child pages
+            </p>
+            <umb-load-indicator></umb-load-indicator>
+        </div>
+        <div class="umb-pane" ng-hide="!vm.status.loaded">
+
+            <div ng-show="error">
+                <div class="alert alert-error">
+                    <div><strong>{{error.errorMsg}}</strong></div>
+                    <div>{{error.data.message}}</div>
+                </div>
+            </div>
+
+            <div ng-show="success">
+                <div class="alert alert-success">
+                    <span ng-show="target == undefined">No page</span><strong ng-hide="target == undefined">{{target.name}}</strong>
+                    is set as the 404 page for
+                    <strong>{{currentNode.name}}</strong> and it's child pages
+                </div>
+                <button class="btn btn-primary" ng-click="vm.close()">Ok</button>
+            </div>
+
+            <p class="abstract" ng-hide="success">
+                The current 404 page for <strong>{{currentNode.name}}</strong> and child pages is show below. <br/>
+                <em>Click the cross next to the page name to deselect the current node as the 404.</em>
+            </p>
+
+            <div ng-if="pageNotFoundNode">
+                <ul class="unstyled list-icons">
+                    <li>
+                        <em class="icon {{pageNotFoundNode.icon}} hover-hide"></em>
+                        <a>{{pageNotFoundNode.name}}</a>
+                        <a ng-click="clear()" title="Remove selected 404"><em class="icon red icon-delete"></em></a>
+                    </li>
+                </ul>
+            </div>
+
+
+            <div ng-hide="pageNotFoundNode || success">
+                <div ng-hide="miniListView">
+                    <umb-tree-search-box hide-search-callback="hideSearch"
+                                         search-callback="onSearchResults"
+                                         search-from-id="{{searchInfo.searchFromId}}"
+                                         search-from-name="{{searchInfo.searchFromName}}"
+                                         section="{{section}}"
+                                         show-search="{{searchInfo.showSearch}}">
+                    </umb-tree-search-box>
+
+                    <br/>
+
+                    <umb-tree-search-results ng-if="searchInfo.showSearch"
+                                             results="searchInfo.results"
+                                             select-result-callback="selectResult">
+                    </umb-tree-search-results>
+
+                    <div ng-hide="searchInfo.showSearch">
+                        <umb-tree api="dialogTreeApi"
+                                  enablecheckboxes="true"
+                                  enablelistviewexpand="true"
+                                  hideheader="{{treeModel.hideHeader}}"
+                                  hideoptions="true"
+                                  isdialog="true"
+                                  on-init="onTreeInit()"
+                                  section="content">
+                        </umb-tree>
+                    </div>
+                </div>
+
+                <umb-mini-list-view entity-type="Document"
+                                    ng-if="miniListView"
+                                    node="miniListView"
+                                    on-close="closeMiniListView()"
+                                    on-select="selectListViewNode(node)">
+                </umb-mini-list-view>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="umb-dialog-footer btn-toolbar umb-btn-toolbar">
+        <div ng-hide="vm.status.existing || success || busy">
+            <a class="btn btn-link" ng-click="vm.close()">
+                <localize key="general_cancel">Cancel</localize>
+            </a>
+            <button class="btn btn-primary" ng-click="setNotFoundPage()">
+                <localize key="general_ok">Save</localize>
+            </button>
+        </div>
+        <div ng-show="vm.status.existing">
+            <button class="btn btn-primary" ng-click="vm.close()">
+                <localize key="general_ok">OK</localize>
+            </button>
+        </div>
+    </div>
+
+</div>

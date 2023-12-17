@@ -1,0 +1,28 @@
+{
+    "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+    "Category": "Editor Tools",
+    "Tags": [
+        "Page Management",
+        "404"
+    ],
+    "VideoUrl": "",
+    "Screenshots": [],
+    "IssueTrackerUrl": "https://github.com/NikRimington/HotChilli.Umbraco.PageNotFoundManager/issues",
+    "LicenseTypes": ["Free"],
+    "RelatedPackages": [],
+    "PackagesByAuthor": [ "HCS.Meta.Robots" ],
+    "PackageType": "Package",
+    "AuthorDetails": {
+        "Name": "Nik Rimington",
+        "Url": "https://justnik.me",
+        "Contributors": [
+            {
+                "Name": "Matthew Wise"
+            },
+            {
+                "Name": "Aaron Sadler"
+            }
+        ]
+    },
+    "Title": "Page Not Found Manager"
+}
