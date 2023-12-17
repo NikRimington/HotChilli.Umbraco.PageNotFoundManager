@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Get next version
-        uses: reecetech/version-increment@2023.10.2
+        uses: NikRimington/version-increment@NikRimington-windows
         id: version
         with:
           scheme: semver
