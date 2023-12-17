@@ -1,0 +1,50 @@
+name: Build and Release Package
+
+on:
+  push:
+    branches: ["develop"]
+  pull_request:
+    branches: ["develop"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Get next version
+        uses: reecetech/version-increment@2023.9.3
+        id: version
+        with:
+          scheme: semver
+          increment: patch
+          release_branch: main
+
+      - name: Set Version Variable
+        env:
+          TAG: ${{ steps.version.outputs.version }}
+        run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
+
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Setup .NET 7
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 7.0.x
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build project
+        run: dotnet build src\HC.PageNotFoundManager\HC.PageNotFoundManager.csproj --configuration Release /p:Version=$VERSION
+
+      - name: Pack project
+        run: dotnet pack --output nupkgs /p:PackageVersion=$VERSION .\src\PageNotFoundManager.sln
