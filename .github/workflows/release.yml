@@ -17,11 +17,21 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Setup .NET
+    - name: Setup .NET 6
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
+    
+    - name: Setup .NET 7
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 7.0.x
   
+    - name: Setup .NET 8
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 8.0.x
+
     - name: Build project
       run: dotnet build src\HC.PageNotFoundManager\HC.PageNotFoundManager.csproj --configuration Release
 
