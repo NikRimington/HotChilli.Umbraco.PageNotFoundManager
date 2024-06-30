@@ -1,6 +1,7 @@
 ﻿using System;
 using HC.PageNotFoundManager.Config;
 using HC.PageNotFoundManager.Models;
+using HC.PageNotFoundManager.Services;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Notifications;
@@ -14,15 +15,18 @@ namespace HC.PageNotFoundManager.Caching
 
         private readonly IPageNotFoundConfig config;
 
+        private readonly ICacheService cacheService;
+
         public PageNotFoundCacheRefresher(
             AppCaches appCaches,
             IPageNotFoundConfig config,
             IJsonSerializer jsonSerializer,
             IEventAggregator eventAggregator,
-            ICacheRefresherNotificationFactory cacheRefresherNotificationFactory)
+            ICacheRefresherNotificationFactory cacheRefresherNotificationFactory, ICacheService cacheService)
             : base(appCaches, jsonSerializer, eventAggregator, cacheRefresherNotificationFactory)
         {
             this.config = config ?? throw new ArgumentNullException(nameof(config));
+            this.cacheService = cacheService;
         }
 
         public override string Name => "PageNotFoundManager Cache Refresher";
@@ -36,7 +40,7 @@ namespace HC.PageNotFoundManager.Caching
                 config.SetNotFoundPage(payload.ParentId, payload.NotFoundPageId, false);
             }
 
-            config.RefreshCache();
+            cacheService.RefreshCache();
         }
     }
 }
