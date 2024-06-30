@@ -78,6 +78,15 @@
             }
         }
 
+        $scope.selectListViewNode = function (node) {
+            node.selected = node.selected === true ? false : true;
+            nodeSelectHandler({ node: node });
+        };
+
+        function openMiniListView(node) {
+            $scope.miniListView = node;
+        }
+
         function close() {
             $scope.nav.hideDialog();
         }
