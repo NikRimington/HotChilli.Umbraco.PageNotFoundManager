@@ -1,0 +1,15 @@
+{
+    "`$schema": "../../umbraco-package-schema.json",
+    "id": "hcs.pagenotfoundmanager",
+    "name": "HCS: Page Not Found Manager",
+    "allowPackageTelemetry": true,
+    "version": "3.0.0",
+    "extensions": [
+        {
+          "name": "HCS: Page Not Found Manager EntryPoint",
+          "alias": "hcs.pagenotfoundmanager.entrypoint",
+          "type": "backofficeEntryPoint",
+          "js": "/app_plugins/HCS.PageNotFoundManager/hcs.pagenotfoundmanager.js"
+        }
+      ]
+}
