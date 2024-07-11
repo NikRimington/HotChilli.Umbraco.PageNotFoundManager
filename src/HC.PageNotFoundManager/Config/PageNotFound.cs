@@ -1,17 +1,11 @@
-﻿using System;
+﻿namespace HC.PageNotFoundManager.Config;
 
-namespace HC.PageNotFoundManager.Config
+/// <summary>
+///     Class to represent the settings from appsettings
+/// </summary>
+public class PageNotFound
 {
-    /// <summary>
-    ///     Class to represent the settings from appsettings
-    /// </summary>
-    public class PageNotFound
-    {
-        public PageNotFound()
-        {
-            UserGroups = Array.Empty<string>();
-        }
+    public PageNotFound() => UserGroups = [];
 
-        public string[] UserGroups { get; set; }
-    }
+    public string[] UserGroups { get; set; }
 }

@@ -1,10 +1,9 @@
-﻿namespace HC.PageNotFoundManager.Models
+﻿namespace HC.PageNotFoundManager.Models;
+
+public class PageNotFoundRequest
 {
-    public class PageNotFoundRequest
-    {
 
-        public int NotFoundPageId { get; set; }
+    public int NotFoundPageId { get; set; }
 
-        public int ParentId { get; set; }
-    }
+    public int ParentId { get; set; }
 }

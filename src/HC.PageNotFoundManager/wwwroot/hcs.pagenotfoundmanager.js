@@ -6,7 +6,7 @@ var c = (t, o, n) => (r(t, o, "read from private field"), n ? n.call(t) : o.get(
 import { UMB_DOCUMENT_ENTITY_TYPE as u } from "@umbraco-cms/backoffice/document";
 import { UmbEntityActionBase as g } from "@umbraco-cms/backoffice/entity-action";
 import { UmbModalToken as l, UMB_MODAL_MANAGER_CONTEXT as p } from "@umbraco-cms/backoffice/modal";
-const y = new l("pagenotfound.modal", {
+const h = new l("hcs.pagenotfound.modal", {
   modal: {
     type: "sidebar",
     size: "medium"
@@ -14,7 +14,7 @@ const y = new l("pagenotfound.modal", {
   }
 });
 var i;
-class h extends g {
+class y extends g {
   constructor(n, e) {
     super(n, e);
     // Modal Manager Context - to open modals such as our custom one or a icon picker,
@@ -28,7 +28,7 @@ class h extends g {
     var e;
     if (!this.args.unique)
       throw new Error("The document unique identifier is missing");
-    const n = (e = c(this, i)) == null ? void 0 : e.open(this, y, {
+    const n = (e = c(this, i)) == null ? void 0 : e.open(this, h, {
       data: {
         entityKey: this.args.unique,
         target: null
@@ -46,7 +46,7 @@ const M = {
   alias: "hcs.pagenotfound.entity.action",
   name: "HCS: Page Not Found Manager: Action",
   weight: 400,
-  api: h,
+  api: y,
   meta: {
     icon: "icon-sensor",
     label: "404 Manager"
