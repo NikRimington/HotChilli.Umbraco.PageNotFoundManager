@@ -4,9 +4,9 @@ namespace HC.PageNotFoundManager.Config;
 
 public interface IPageNotFoundConfig
 {
-    int GetNotFoundPage(int parentId);
+    Guid? GetNotFoundPage(int parentId);
 
-    int GetNotFoundPage(Guid parentKey);
+    Guid? GetNotFoundPage(Guid parentKey);
 
     void RefreshCache();
 

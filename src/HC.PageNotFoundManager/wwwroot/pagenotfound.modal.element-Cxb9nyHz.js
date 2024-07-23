@@ -1,16 +1,17 @@
-import { html as _, state as u, customElement as y } from "@umbraco-cms/backoffice/external/lit";
-import { UmbModalBaseElement as v } from "@umbraco-cms/backoffice/modal";
+import { html as _, state as u, customElement as v } from "@umbraco-cms/backoffice/external/lit";
+import { UmbModalBaseElement as y } from "@umbraco-cms/backoffice/modal";
 import { UmbDocumentItemRepository as f } from "@umbraco-cms/backoffice/document";
-var b = Object.defineProperty, C = Object.getOwnPropertyDescriptor, m = (e) => {
+import { P as b } from "./index-DwuL4jY1.js";
+var g = Object.defineProperty, C = Object.getOwnPropertyDescriptor, m = (e) => {
   throw TypeError(e);
 }, c = (e, t, o, a) => {
-  for (var n = a > 1 ? void 0 : a ? C(t, o) : t, r = e.length - 1, l; r >= 0; r--)
-    (l = e[r]) && (n = (a ? l(t, o, n) : l(n)) || n);
-  return a && n && b(t, o, n), n;
-}, N = (e, t, o) => t.has(e) || m("Cannot " + o), g = (e, t, o) => t.has(e) ? m("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, o), d = (e, t, o) => (N(e, t, "access private method"), o), i, h, p;
-let s = class extends v {
+  for (var n = a > 1 ? void 0 : a ? C(t, o) : t, l = e.length - 1, r; l >= 0; l--)
+    (r = e[l]) && (n = (a ? r(t, o, n) : r(n)) || n);
+  return a && n && g(t, o, n), n;
+}, N = (e, t, o) => t.has(e) || m("Cannot " + o), P = (e, t, o) => t.has(e) ? m("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, o), d = (e, t, o) => (N(e, t, "access private method"), o), i, h, p;
+let s = class extends y {
   constructor() {
-    super(), g(this, i), this._documentName = "";
+    super(), P(this, i), this._documentName = "";
   }
   connectedCallback() {
     var e, t;
@@ -19,6 +20,19 @@ let s = class extends v {
   handleClose() {
     var e;
     (e = this.modalContext) == null || e.reject({ type: "close" });
+  }
+  async handleSave() {
+    var t, o;
+    console.log("PNFM save triggered");
+    var e = await b.postApiV1HcsSetNotFound(
+      {
+        requestBody: {
+          parentId: ((t = this.data) == null ? void 0 : t.entityKey) ?? "",
+          notFoundPageId: this._selection
+        }
+      }
+    );
+    console.log(e), (o = this.modalContext) == null || o.submit();
   }
   render() {
     return console.log(this.data), _`
@@ -33,6 +47,7 @@ let s = class extends v {
                 </uui-box>
                                 
                 <div slot="actions">
+                    <uui-button id="close" label="Close" @click="${this.handleSave}">Save & Close</uui-button>
                     <uui-button id="close" label="Close" @click="${this.handleClose}">Close</uui-button>
                 </div>
             </umb-body-layout>
@@ -58,11 +73,11 @@ c([
   u()
 ], s.prototype, "_documentName", 2);
 s = c([
-  y("page-not-found-modal")
+  v("page-not-found-modal")
 ], s);
-const w = s;
+const x = s;
 export {
   s as PageNotFoundModalElement,
-  w as default
+  x as default
 };
-//# sourceMappingURL=pagenotfound.modal.element-BKqE-HqI.js.map
+//# sourceMappingURL=pagenotfound.modal.element-Cxb9nyHz.js.map

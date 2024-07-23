@@ -24,13 +24,13 @@ namespace HC.PageNotFoundManager.Backoffice;
 [Route("api/v{version:apiVersion}/hcs")]
 [AppendEventMessages]
 [Produces("application/json")]
-public class MenuController : Controller
+public class ManagementController : Controller
 {
     private readonly IPageNotFoundConfig config;
 
     private readonly DistributedCache distributedCache;
 
-    public MenuController(DistributedCache distributedCache, IPageNotFoundConfig config)
+    public ManagementController(DistributedCache distributedCache, IPageNotFoundConfig config)
     {
         this.distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
         this.config = config ?? throw new ArgumentNullException(nameof(config));
@@ -38,8 +38,8 @@ public class MenuController : Controller
 
     [HttpGet("get-not-found")]
     [MapToApiVersion("1.0")]
-    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-    public int GetNotFoundPage(int pageId)
+    [ProducesResponseType(typeof(Guid?), StatusCodes.Status200OK)]
+    public Guid? GetNotFoundPage(Guid pageId)
     {
         return config.GetNotFoundPage(pageId);
     }
@@ -48,7 +48,7 @@ public class MenuController : Controller
     [MapToApiVersion("1.0")]
     public void SetNotFoundPage(PageNotFoundRequest request)
     {
-        config.SetNotFoundPage(request.ParentId, request.NotFoundPageId, true);
+        config.SetNotFoundPage(request.ParentId, request.NotFoundPageId ?? Guid.Empty, true);
 
         distributedCache.RefreshPageNotFoundConfig(request);
     }

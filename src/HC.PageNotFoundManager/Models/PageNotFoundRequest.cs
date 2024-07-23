@@ -1,9 +1,11 @@
-﻿namespace HC.PageNotFoundManager.Models;
+﻿using System;
+
+namespace HC.PageNotFoundManager.Models;
 
 public class PageNotFoundRequest
 {
 
-    public int NotFoundPageId { get; set; }
+    public Guid? NotFoundPageId { get; set; }
 
-    public int ParentId { get; set; }
+    public Guid ParentId { get; set; }
 }

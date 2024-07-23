@@ -73,9 +73,9 @@ public class PageNotFoundFinder : IContentLastChanceFinder
                     request?.Culture);
             }
 
-            int nfp = config.GetNotFoundPage(closestContent.Id);
+            var nfp = config.GetNotFoundPage(closestContent.Key);
 
-            while (nfp == 0)
+            while (nfp == null || nfp == Guid.Empty)
             {
                 closestContent = closestContent.Parent;
 
@@ -84,10 +84,10 @@ public class PageNotFoundFinder : IContentLastChanceFinder
                     return false;
                 }
 
-                nfp = config.GetNotFoundPage(closestContent.Id);
+                nfp = config.GetNotFoundPage(closestContent.Key);
             }
 
-            var content = umbracoContext.UmbracoContext.Content.GetById(nfp);
+            var content = umbracoContext.UmbracoContext.Content.GetById(nfp ?? Guid.Empty);
             if (content == null)
             {
                 return false;

@@ -38,22 +38,19 @@ public class PageNotFoundConfig : IPageNotFoundConfig
         }
     }
 
-    public int GetNotFoundPage(int parentId)
+    public Guid? GetNotFoundPage(int parentId)
     {
         using var scope = scopeProvider.CreateScope(autoComplete: true);
         using var umbracoContext = umbracoContextFactory.EnsureUmbracoContext();
         var parentNode = umbracoContext.UmbracoContext.Content?.GetById(parentId);
-        return parentNode != null ? GetNotFoundPage(parentNode.Key) : 0;
+        return parentNode != null ? GetNotFoundPage(parentNode.Key) : null;
     }
 
-    public int GetNotFoundPage(Guid parentKey)
+    public Guid? GetNotFoundPage(Guid parentKey)
     {
         using var scope = scopeProvider.CreateScope(autoComplete: true);
-        using var umbracoContext = umbracoContextFactory.EnsureUmbracoContext();
-
         var x = ConfiguredPages.FirstOrDefault(p => p.ParentId == parentKey);
-        var page = x != null ? umbracoContext.UmbracoContext.Content?.GetById(x.NotFoundPageId) : null;
-        return page != null ? page.Id : 0;
+        return x?.NotFoundPageId;
     }
 
     public void RefreshCache()

@@ -33,7 +33,7 @@ public class PageNotFoundCacheRefresher : PayloadCacheRefresherBase<CacheRefresh
     {
         foreach (var payload in payloads)
         {
-            config.SetNotFoundPage(payload.ParentId, payload.NotFoundPageId, false);
+            config.SetNotFoundPage(payload.ParentId, payload.NotFoundPageId ?? Guid.Empty, false);
         }
 
         config.RefreshCache();

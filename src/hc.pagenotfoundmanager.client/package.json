@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "build": "tsc && vite build",
-    "watch": "vite build --watch"
+    "watch": "vite build --watch",
+    "openapi-ts": "openapi-ts --file openapi-ts.config.js"
   },
   "dependencies": {
     "lit": "^3.1.4"
   },
   "devDependencies": {
+    "@hey-api/openapi-ts": "^0.48.2",
     "@umbraco-cms/backoffice": "^14.1.0-rc2",
     "typescript": "^5.2.2",
     "vite": "^5.3.1"

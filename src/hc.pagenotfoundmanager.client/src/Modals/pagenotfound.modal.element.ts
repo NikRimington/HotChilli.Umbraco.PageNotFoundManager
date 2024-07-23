@@ -2,14 +2,9 @@
 import { UmbModalBaseElement, UmbModalRejectReason } from "@umbraco-cms/backoffice/modal";
 import type { UmbInputDocumentElement } from "@umbraco-cms/backoffice/document";
 import { UmbDocumentItemRepository } from "@umbraco-cms/backoffice/document";
-//import {UmbPropertyEditorUIContentPickerElement} from "@umbraco-cms/backoffice/property-editor/"
-//import { tryExecuteAndNotify } from '@umbraco-cms/backoffice/resources';
-
-//import { TemplateResult, css } from "lit";
 
 import { PageNotFoundModalData, PageNotFoundModalValue } from "./pagenotfound.modal.token.ts";
-//import { ExaminePeekService, ISearchResult } from "../api/index.ts";
-//import { UUIButtonElement } from "@umbraco-cms/backoffice/external/uui";
+import { PageNotFoundManagerService } from "../api/services.gen.ts";
 
 @customElement('page-not-found-modal')
 export class PageNotFoundModalElement extends UmbModalBaseElement<PageNotFoundModalData, PageNotFoundModalValue>
@@ -46,6 +41,20 @@ export class PageNotFoundModalElement extends UmbModalBaseElement<PageNotFoundMo
         this.modalContext?.reject({ type: "close" } as UmbModalRejectReason);
     }
 
+    private async handleSave() {
+        console.log("PNFM save triggered");
+        var res = await PageNotFoundManagerService.postApiV1HcsSetNotFound(
+            {
+                requestBody: {
+                    parentId: this.data?.entityKey ?? "",
+                    notFoundPageId: this._selection
+                }
+            }
+        );
+        console.log(res);
+        this.modalContext?.submit();
+    }
+
     #selectionChanged(e: CustomEvent) {
 		this._selection = (e.target as UmbInputDocumentElement).selection[0];
 	}
@@ -75,6 +84,7 @@ export class PageNotFoundModalElement extends UmbModalBaseElement<PageNotFoundMo
                 </uui-box>
                                 
                 <div slot="actions">
+                    <uui-button id="close" label="Close" @click="${this.handleSave}">Save & Close</uui-button>
                     <uui-button id="close" label="Close" @click="${this.handleClose}">Close</uui-button>
                 </div>
             </umb-body-layout>
