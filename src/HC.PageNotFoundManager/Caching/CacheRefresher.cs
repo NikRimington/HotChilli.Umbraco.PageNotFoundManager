@@ -12,11 +12,11 @@ public class PageNotFoundCacheRefresher : PayloadCacheRefresherBase<CacheRefresh
 {
     public const string Id = "fb984dde-7b8b-4e58-bb5c-5f0cb043af4e";
 
-    private readonly IPageNotFoundConfig config;
+    private readonly IPageNotFoundService config;
 
     public PageNotFoundCacheRefresher(
         AppCaches appCaches,
-        IPageNotFoundConfig config,
+        IPageNotFoundService config,
         IJsonSerializer jsonSerializer,
         IEventAggregator eventAggregator,
         ICacheRefresherNotificationFactory cacheRefresherNotificationFactory)

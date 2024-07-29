@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Asp.Versioning;
 using HC.PageNotFoundManager.Caching;
 using HC.PageNotFoundManager.Config;
@@ -7,10 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Api.Common.Attributes;
-using Umbraco.Cms.Api.Common.Filters;
-using Umbraco.Cms.Api.Management.Controllers;
 using Umbraco.Cms.Api.Management.Filters;
-using Umbraco.Cms.Api.Management.Routing;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Web.Common.Authorization;
 
@@ -26,30 +24,33 @@ namespace HC.PageNotFoundManager.Backoffice;
 [Produces("application/json")]
 public class ManagementController : Controller
 {
-    private readonly IPageNotFoundConfig config;
+    private readonly IPageNotFoundService service;
 
     private readonly DistributedCache distributedCache;
 
-    public ManagementController(DistributedCache distributedCache, IPageNotFoundConfig config)
+    public ManagementController(DistributedCache distributedCache, IPageNotFoundService service)
     {
         this.distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
-        this.config = config ?? throw new ArgumentNullException(nameof(config));
+        this.service = service ?? throw new ArgumentNullException(nameof(service));
     }
 
     [HttpGet("get-not-found")]
     [MapToApiVersion("1.0")]
-    [ProducesResponseType(typeof(Guid?), StatusCodes.Status200OK)]
-    public Guid? GetNotFoundPage(Guid pageId)
+    [ProducesResponseType(typeof(PageNotFoundDetails), StatusCodes.Status200OK)]
+    public PageNotFoundDetails? GetNotFoundPage(Guid pageId)
     {
-        return config.GetNotFoundPage(pageId);
+        return service.GetNotFoundPage(pageId);
     }
 
     [HttpPost("set-not-found")]
     [MapToApiVersion("1.0")]
-    public void SetNotFoundPage(PageNotFoundRequest request)
+    [ProducesResponseType(typeof(PageNotFoundDetails), StatusCodes.Status200OK)]
+    public async Task<PageNotFoundDetails> SetNotFoundPage(PageNotFoundRequest request)
     {
-        config.SetNotFoundPage(request.ParentId, request.NotFoundPageId ?? Guid.Empty, true);
+        var res = await service.SetNotFoundPage(request.ParentId, request.NotFoundPageId ?? Guid.Empty, true);
 
         distributedCache.RefreshPageNotFoundConfig(request);
+
+        return res;
     }
 }

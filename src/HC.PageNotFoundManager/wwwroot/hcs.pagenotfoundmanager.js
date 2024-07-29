@@ -1,4 +1,4 @@
-import { o as i } from "./index-DwuL4jY1.js";
+import { o as i } from "./index-D9oc8jC4.js";
 import "@umbraco-cms/backoffice/auth";
 export {
   i as onInit

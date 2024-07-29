@@ -6,12 +6,13 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
+using Umbraco.Extensions;
 
 namespace HC.PageNotFoundManager.ContentFinders;
 
 public class PageNotFoundFinder : IContentLastChanceFinder
 {
-    private readonly IPageNotFoundConfig config;
+    private readonly IPageNotFoundService config;
 
     private readonly IDomainService domainService;
 
@@ -20,7 +21,7 @@ public class PageNotFoundFinder : IContentLastChanceFinder
     public PageNotFoundFinder(
         IDomainService domainService,
         IUmbracoContextFactory umbracoContextFactory,
-        IPageNotFoundConfig config)
+        IPageNotFoundService config)
     {
         this.domainService = domainService ?? throw new ArgumentNullException(nameof(domainService));
         this.umbracoContextFactory =
@@ -75,7 +76,10 @@ public class PageNotFoundFinder : IContentLastChanceFinder
 
             var nfp = config.GetNotFoundPage(closestContent.Key);
 
-            while (nfp == null || nfp == Guid.Empty)
+            var nfpKey = nfp.Explicit404 ?? nfp.Inherited404?.Explicit404 ?? Guid.Empty;
+            var content = umbracoContext.UmbracoContext.Content.GetById(nfpKey);
+
+            while (content == null || closestContent.Parent != null)
             {
                 closestContent = closestContent.Parent;
 
@@ -85,13 +89,9 @@ public class PageNotFoundFinder : IContentLastChanceFinder
                 }
 
                 nfp = config.GetNotFoundPage(closestContent.Key);
-            }
-
-            var content = umbracoContext.UmbracoContext.Content.GetById(nfp ?? Guid.Empty);
-            if (content == null)
-            {
-                return false;
-            }
+                nfpKey = nfp.Explicit404 ?? nfp.Inherited404?.Explicit404 ?? Guid.Empty;
+                content = umbracoContext.UmbracoContext.Content.GetById(nfpKey);
+            }            
 
             request.SetResponseStatus(404);
             request.SetPublishedContent(content);

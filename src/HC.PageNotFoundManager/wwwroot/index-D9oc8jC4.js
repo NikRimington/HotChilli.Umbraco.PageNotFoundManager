@@ -1,21 +1,22 @@
-var b = (t) => {
+var E = (t) => {
   throw TypeError(t);
 };
-var E = (t, e, r) => e.has(t) || b("Cannot " + r);
-var R = (t, e, r) => (E(t, e, "read from private field"), r ? r.call(t) : e.get(t)), _ = (t, e, r) => e.has(t) ? b("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, r), A = (t, e, r, n) => (E(t, e, "write to private field"), n ? n.call(t, r) : e.set(t, r), r);
+var b = (t, e, r) => e.has(t) || E("Cannot " + r);
+var _ = (t, e, r) => (b(t, e, "read from private field"), r ? r.call(t) : e.get(t)), R = (t, e, r) => e.has(t) ? E("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, r), N = (t, e, r, n) => (b(t, e, "write to private field"), n ? n.call(t, r) : e.set(t, r), r);
 import { UMB_DOCUMENT_ENTITY_TYPE as q } from "@umbraco-cms/backoffice/document";
-import { tryExecuteAndNotify as P } from "@umbraco-cms/backoffice/resources";
-import { UmbEntityActionBase as I } from "@umbraco-cms/backoffice/entity-action";
-import { UmbModalToken as D, UMB_MODAL_MANAGER_CONTEXT as H } from "@umbraco-cms/backoffice/modal";
-import { UMB_AUTH_CONTEXT as x } from "@umbraco-cms/backoffice/auth";
-const F = new D("hcs.pagenotfound.modal", {
+import { tryExecuteAndNotify as I } from "@umbraco-cms/backoffice/resources";
+import { UmbEntityActionBase as P } from "@umbraco-cms/backoffice/entity-action";
+import { UmbModalToken as x, UMB_MODAL_MANAGER_CONTEXT as D } from "@umbraco-cms/backoffice/modal";
+import { UMB_NOTIFICATION_CONTEXT as H } from "@umbraco-cms/backoffice/notification";
+import { UMB_AUTH_CONTEXT as M } from "@umbraco-cms/backoffice/auth";
+const F = new x("hcs.pagenotfound.modal", {
   modal: {
     type: "sidebar",
     size: "medium"
     // full, large, medium, small
   }
 });
-class S {
+class A {
   constructor() {
     this._fns = [];
   }
@@ -38,8 +39,8 @@ const l = {
   VERSION: "1.0",
   WITH_CREDENTIALS: !1,
   interceptors: {
-    request: new S(),
-    response: new S()
+    request: new A(),
+    response: new A()
   }
 };
 class C extends Error {
@@ -47,7 +48,7 @@ class C extends Error {
     super(n), this.name = "ApiError", this.url = r.url, this.status = r.status, this.statusText = r.statusText, this.body = r.body, this.request = e;
   }
 }
-class M extends Error {
+class v extends Error {
   constructor(e) {
     super(e), this.name = "CancelError";
   }
@@ -55,7 +56,7 @@ class M extends Error {
     return !0;
   }
 }
-class U {
+class B {
   constructor(e) {
     this._isResolved = !1, this._isRejected = !1, this._isCancelled = !1, this.cancelHandlers = [], this.promise = new Promise((r, n) => {
       this._resolve = r, this._reject = n;
@@ -97,20 +98,20 @@ class U {
           console.warn("Cancellation threw an error", e);
           return;
         }
-      this.cancelHandlers.length = 0, this._reject && this._reject(new M("Request aborted"));
+      this.cancelHandlers.length = 0, this._reject && this._reject(new v("Request aborted"));
     }
   }
   get isCancelled() {
     return this._isCancelled;
   }
 }
-const h = (t) => typeof t == "string", y = (t) => h(t) && t !== "", p = (t) => t instanceof Blob, w = (t) => t instanceof FormData, v = (t) => {
+const h = (t) => typeof t == "string", y = (t) => h(t) && t !== "", p = (t) => t instanceof Blob, w = (t) => t instanceof FormData, U = (t) => {
   try {
     return btoa(t);
   } catch {
     return Buffer.from(t).toString("base64");
   }
-}, B = (t) => {
+}, $ = (t) => {
   const e = [], r = (s, o) => {
     e.push(`${encodeURIComponent(s)}=${encodeURIComponent(String(o))}`);
   }, n = (s, o) => {
@@ -122,8 +123,8 @@ const h = (t) => typeof t == "string", y = (t) => h(t) && t !== "", p = (t) => t
     var a;
     return (a = e.path) != null && a.hasOwnProperty(i) ? r(String(e.path[i])) : o;
   }), s = t.BASE + n;
-  return e.query ? s + B(e.query) : s;
-}, $ = (t) => {
+  return e.query ? s + $(e.query) : s;
+}, k = (t) => {
   if (t.formData) {
     const e = new FormData(), r = (n, s) => {
       h(s) || p(s) ? e.append(n, s) : e.append(n, JSON.stringify(s));
@@ -132,7 +133,7 @@ const h = (t) => typeof t == "string", y = (t) => h(t) && t !== "", p = (t) => t
       Array.isArray(s) ? s.forEach((o) => r(n, o)) : r(n, s);
     }), e;
   }
-}, f = async (t, e) => typeof e == "function" ? e(t) : e, k = async (t, e) => {
+}, f = async (t, e) => typeof e == "function" ? e(t) : e, G = async (t, e) => {
   const [r, n, s, o] = await Promise.all([
     // @ts-ignore
     f(e, t.TOKEN),
@@ -151,15 +152,15 @@ const h = (t) => typeof t == "string", y = (t) => h(t) && t !== "", p = (t) => t
     [d]: String(c)
   }), {});
   if (y(r) && (i.Authorization = `Bearer ${r}`), y(n) && y(s)) {
-    const a = v(`${n}:${s}`);
+    const a = U(`${n}:${s}`);
     i.Authorization = `Basic ${a}`;
   }
   return e.body !== void 0 && (e.mediaType ? i["Content-Type"] = e.mediaType : p(e.body) ? i["Content-Type"] = e.body.type || "application/octet-stream" : h(e.body) ? i["Content-Type"] = "text/plain" : w(e.body) || (i["Content-Type"] = "application/json")), new Headers(i);
-}, G = (t) => {
+}, V = (t) => {
   var e, r;
   if (t.body !== void 0)
     return (e = t.mediaType) != null && e.includes("application/json") || (r = t.mediaType) != null && r.includes("+json") ? JSON.stringify(t.body) : h(t.body) || p(t.body) || w(t.body) ? t.body : JSON.stringify(t.body);
-}, V = async (t, e, r, n, s, o, i) => {
+}, W = async (t, e, r, n, s, o, i) => {
   const a = new AbortController();
   let d = {
     headers: o,
@@ -171,13 +172,13 @@ const h = (t) => typeof t == "string", y = (t) => h(t) && t !== "", p = (t) => t
   for (const c of t.interceptors.request._fns)
     d = await c(d);
   return i(() => a.abort()), await fetch(r, d);
-}, W = (t, e) => {
+}, z = (t, e) => {
   if (e) {
     const r = t.headers.get(e);
     if (h(r))
       return r;
   }
-}, z = async (t) => {
+}, J = async (t) => {
   if (t.status !== 204)
     try {
       const e = t.headers.get("Content-Type");
@@ -195,7 +196,7 @@ const h = (t) => typeof t == "string", y = (t) => h(t) && t !== "", p = (t) => t
     } catch (e) {
       console.error(e);
     }
-}, J = (t, e) => {
+}, K = (t, e) => {
   const n = {
     400: "Bad Request",
     401: "Unauthorized",
@@ -255,14 +256,14 @@ const h = (t) => typeof t == "string", y = (t) => h(t) && t !== "", p = (t) => t
       `Generic Error: status: ${s}; status text: ${o}; body: ${i}`
     );
   }
-}, N = (t, e) => new U(async (r, n, s) => {
+}, S = (t, e) => new B(async (r, n, s) => {
   try {
-    const o = L(t, e), i = $(e), a = G(e), d = await k(t, e);
+    const o = L(t, e), i = k(e), a = V(e), d = await G(t, e);
     if (!s.isCancelled) {
-      let c = await V(t, e, o, a, i, d, s);
+      let c = await W(t, e, o, a, i, d, s);
       for (const O of t.interceptors.response._fns)
         c = await O(c);
-      const m = await z(c), j = W(c, e.responseHeader);
+      const m = await J(c), j = z(c, e.responseHeader);
       let g = m;
       e.responseTransformer && c.ok && (g = await e.responseTransformer(m));
       const T = {
@@ -272,21 +273,21 @@ const h = (t) => typeof t == "string", y = (t) => h(t) && t !== "", p = (t) => t
         statusText: c.statusText,
         body: j ?? g
       };
-      J(e, T), r(T.body);
+      K(e, T), r(T.body);
     }
   } catch (o) {
     n(o);
   }
 });
-class K {
+class X {
   /**
    * @param data The data for the request.
    * @param data.pageId
-   * @returns string OK
+   * @returns unknown OK
    * @throws ApiError
    */
   static getApiV1HcsGetNotFound(e = {}) {
-    return N(l, {
+    return S(l, {
       method: "GET",
       url: "/api/v1/hcs/get-not-found",
       query: {
@@ -300,16 +301,15 @@ class K {
   /**
    * @param data The data for the request.
    * @param data.requestBody
-   * @returns string OK
+   * @returns unknown OK
    * @throws ApiError
    */
   static postApiV1HcsSetNotFound(e = {}) {
-    return N(l, {
+    return S(l, {
       method: "POST",
       url: "/api/v1/hcs/set-not-found",
       body: e.requestBody,
       mediaType: "application/json",
-      responseHeader: "Umb-Notifications",
       errors: {
         401: "The resource is protected and requires an authentication token"
       }
@@ -317,22 +317,33 @@ class K {
   }
 }
 var u;
-class X extends I {
+class Y extends P {
   constructor(r, n) {
     super(r, n);
     // Modal Manager Context - to open modals such as our custom one or a icon picker,
     // content picker etc
-    _(this, u);
-    this.consumeContext(H, (s) => {
-      A(this, u, s);
+    R(this, u);
+    this._handleNotification = (s, o) => {
+      var a;
+      const i = {
+        data: {
+          headline: "404 Page Set",
+          message: `The 404 Page '${o.selectedNodeName}' has been set against '${o.currentNodeName}'`
+        }
+      };
+      (a = this._notificationContext) == null || a.peek(s, i);
+    }, this.consumeContext(D, (s) => {
+      N(this, u, s);
+    }), this.consumeContext(H, (s) => {
+      this._notificationContext = s;
     });
   }
   async execute() {
     var s;
     if (!this.args.unique)
       throw new Error("The document unique identifier is missing");
-    var r = await P(this, K.getApiV1HcsGetNotFound({ pageId: this.args.unique }));
-    const n = (s = R(this, u)) == null ? void 0 : s.open(this, F, {
+    var r = await I(this, X.getApiV1HcsGetNotFound({ pageId: this.args.unique }));
+    const n = (s = _(this, u)) == null ? void 0 : s.open(this, F, {
       data: {
         entityKey: this.args.unique,
         target: r.data
@@ -340,38 +351,43 @@ class X extends I {
     });
     await (n == null ? void 0 : n.onSubmit().catch((o) => {
       console.log("rejected", o);
+    }).then((o) => {
+      this.isReturnModel(o) && this._handleNotification("positive", o);
     }));
+  }
+  isReturnModel(r) {
+    return r.currentNodeName !== void 0;
   }
 }
 u = new WeakMap();
-const Y = {
+const Q = {
   type: "entityAction",
   kind: "default",
   alias: "hcs.pagenotfound.entity.action",
   name: "HCS: Page Not Found Manager: Action",
   weight: 400,
-  api: X,
+  api: Y,
   meta: {
     icon: "icon-sensor",
     label: "404 Manager"
   },
   forEntityTypes: [q]
-}, Q = [Y], Z = {
+}, Z = [Q], ee = {
   type: "modal",
   alias: "hcs.pagenotfound.modal",
   name: "Page Not Found Modal",
-  js: () => import("./pagenotfound.modal.element-Cxb9nyHz.js")
-}, ee = [Z], ae = (t, e) => {
+  js: () => import("./pagenotfound.modal.element-DAvG6IRv.js")
+}, te = [ee], de = (t, e) => {
   e.registerMany([
-    ...Q,
-    ...ee
-  ]), t.consumeContext(x, (r) => {
+    ...Z,
+    ...te
+  ]), t.consumeContext(M, (r) => {
     const n = r.getOpenApiConfiguration();
     l.TOKEN = n.token, l.BASE = n.base, l.WITH_CREDENTIALS = n.withCredentials;
   });
 };
 export {
-  K as P,
-  ae as o
+  X as P,
+  de as o
 };
-//# sourceMappingURL=index-DwuL4jY1.js.map
+//# sourceMappingURL=index-D9oc8jC4.js.map

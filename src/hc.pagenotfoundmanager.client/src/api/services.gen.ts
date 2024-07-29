@@ -9,7 +9,7 @@ export class PageNotFoundManagerService {
     /**
      * @param data The data for the request.
      * @param data.pageId
-     * @returns string OK
+     * @returns unknown OK
      * @throws ApiError
      */
     public static getApiV1HcsGetNotFound(data: GetApiV1HcsGetNotFoundData = {}): CancelablePromise<GetApiV1HcsGetNotFoundResponse> {
@@ -28,7 +28,7 @@ export class PageNotFoundManagerService {
     /**
      * @param data The data for the request.
      * @param data.requestBody
-     * @returns string OK
+     * @returns unknown OK
      * @throws ApiError
      */
     public static postApiV1HcsSetNotFound(data: PostApiV1HcsSetNotFoundData = {}): CancelablePromise<PostApiV1HcsSetNotFoundResponse> {
@@ -37,7 +37,6 @@ export class PageNotFoundManagerService {
             url: '/api/v1/hcs/set-not-found',
             body: data.requestBody,
             mediaType: 'application/json',
-            responseHeader: 'Umb-Notifications',
             errors: {
                 401: 'The resource is protected and requires an authentication token'
             }

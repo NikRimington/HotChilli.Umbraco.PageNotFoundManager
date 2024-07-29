@@ -14,8 +14,14 @@ export type NotificationHeaderModel = {
     type: EventMessageTypeModel;
 };
 
+export type PageNotFoundDetails = {
+    pageId: string;
+    explicit404?: string | null;
+    inherited404?: PageNotFoundDetails | null;
+};
+
 export type PageNotFoundRequest = {
-    notFoundPageId: string | null | undefined;
+    notFoundPageId?: string | null;
     parentId: string;
 };
 
@@ -23,13 +29,13 @@ export type GetApiV1HcsGetNotFoundData = {
     pageId?: string;
 };
 
-export type GetApiV1HcsGetNotFoundResponse = string;
+export type GetApiV1HcsGetNotFoundResponse = PageNotFoundDetails;
 
 export type PostApiV1HcsSetNotFoundData = {
     requestBody?: PageNotFoundRequest;
 };
 
-export type PostApiV1HcsSetNotFoundResponse = string;
+export type PostApiV1HcsSetNotFoundResponse = PageNotFoundDetails;
 
 export type $OpenApiTs = {
     '/api/v1/hcs/get-not-found': {
@@ -39,7 +45,7 @@ export type $OpenApiTs = {
                 /**
                  * OK
                  */
-                200: string;
+                200: PageNotFoundDetails;
                 /**
                  * The resource is protected and requires an authentication token
                  */
@@ -54,7 +60,7 @@ export type $OpenApiTs = {
                 /**
                  * OK
                  */
-                200: string;
+                200: PageNotFoundDetails;
                 /**
                  * The resource is protected and requires an authentication token
                  */

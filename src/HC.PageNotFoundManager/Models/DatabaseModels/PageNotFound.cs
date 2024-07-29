@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using NPoco;
 
-namespace HC.PageNotFoundManager.Models;
+namespace HC.PageNotFoundManager.Models.DatabaseModels;
 
 [TableName(TableName)]
 [PrimaryKey("ParentId", AutoIncrement = false)]

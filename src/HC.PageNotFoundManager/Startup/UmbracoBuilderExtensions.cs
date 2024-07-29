@@ -12,13 +12,13 @@ public static class UmbracoBuilderExtensions
 {
     public static IUmbracoBuilder UsePageNotFoundManager(this IUmbracoBuilder builder)
     {
-        if (builder.Services.FirstOrDefault(x => x.ServiceType == typeof(IPageNotFoundConfig)) != null)
+        if (builder.Services.FirstOrDefault(x => x.ServiceType == typeof(IPageNotFoundService)) != null)
         {
             return builder;
         }
 
         builder.Services.ConfigureOptions<Backoffice.Swagger.HCSSwaggerGenOptions>();
-        builder.Services.AddUnique<IPageNotFoundConfig, PageNotFoundConfig>();
+        builder.Services.AddUnique<IPageNotFoundService, PageNotFoundConfigService>();
         builder.SetContentLastChanceFinder<PageNotFoundFinder>();
         builder
             .AddNotificationHandler<UmbracoApplicationStartingNotification, UmbracoStartingNotificationHandler>();
