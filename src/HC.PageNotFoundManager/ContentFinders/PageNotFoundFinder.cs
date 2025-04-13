@@ -44,7 +44,8 @@ namespace HC.PageNotFoundManager.ContentFinders
                 foreach (var currentDomain in domains)
                 {
                     if (IsCurrentDomainIsAbsoluteAndCurrentRequestStartsWithDomain(request, currentDomain)
-                        || CurrentRequestStartsWithDomainAndDomainDoesntStartWithHttp(request, currentDomain))
+                        || CurrentRequestStartsWithDomainAndDomainDoesntStartWithHttp(request, currentDomain) 
+                        || CurrentPathStartsWithDomainAndDomainDoesntStartWithHttp(request, currentDomain))
                     {
                         domain = currentDomain;
                         break;
@@ -114,5 +115,13 @@ namespace HC.PageNotFoundManager.ContentFinders
             return currentDomain.DomainName.ToLower().StartsWith("http")
                    && request.Uri.AbsoluteUri.ToLower().StartsWith(currentDomain.DomainName.ToLower());
         }
-    }
+
+		private static bool CurrentPathStartsWithDomainAndDomainDoesntStartWithHttp(
+			IPublishedRequestBuilder request,
+			IDomain currentDomain)
+		{
+			return (request.Uri.AbsolutePath.ToLower()).StartsWith(
+				$"{currentDomain.DomainName.ToLower()}/");
+		}
+	}
 }
