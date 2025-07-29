@@ -1,10 +1,11 @@
-﻿import { customElement, html, state } from "@umbraco-cms/backoffice/external/lit";
+﻿import { tryExecute } from '@umbraco-cms/backoffice/resources';
+import { customElement, html, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbModalBaseElement, UmbModalRejectReason } from "@umbraco-cms/backoffice/modal";
 import type { UmbInputDocumentElement } from "@umbraco-cms/backoffice/document";
-import { UmbDocumentItemRepository } from "@umbraco-cms/backoffice/document";
-
+import { DocumentService } from '@umbraco-cms/backoffice/external/backend-api';
 import { PageNotFoundModalData, PageNotFoundModalValue } from "./pagenotfound.modal.token.ts";
-import { PageNotFoundManagerService } from "../api/services.gen.ts";
+import { PageNotFoundManagerService } from "../api/sdk.gen.ts";
+import type { PostApiV1HcsSetNotFoundData } from '../api/types.gen';
 
 @customElement('page-not-found-modal')
 export class PageNotFoundModalElement extends UmbModalBaseElement<PageNotFoundModalData, PageNotFoundModalValue>
@@ -49,14 +50,15 @@ export class PageNotFoundModalElement extends UmbModalBaseElement<PageNotFoundMo
     }
 
     private async handleSave() {
-        var res = await PageNotFoundManagerService.postApiV1HcsSetNotFound(
-            {
-                requestBody: {
-                    parentId: this.data?.entityKey ?? "",
-                    notFoundPageId: this._selection
-                }
-            }
-        );
+        const PostApiV1HcsSetNotFoundData: PostApiV1HcsSetNotFoundData = {
+            body: {
+                parentId: this.data?.entityKey ?? "",
+                notFoundPageId: this._selection
+            },
+            url: '/api/v1/hcs/set-not-found'
+        };
+
+        var res = await PageNotFoundManagerService.postApiV1HcsSetNotFound(PostApiV1HcsSetNotFoundData);
 
         console.log(res);
 
@@ -96,15 +98,20 @@ export class PageNotFoundModalElement extends UmbModalBaseElement<PageNotFoundMo
 	}
 
     async #getDocumentName(entityKey: string | undefined | null) {
-		if (!entityKey) return;
-		// Should this be done here or in the action file?
-		const { data } = await new UmbDocumentItemRepository(this).requestItems([entityKey]);
-		if (!data) return;
-		const item = data[0];
-		//TODO How do we ensure we get the correct variant?
-		return item.variants[0]?.name;
-
-	}
+        try {
+            if (!entityKey) return;
+            const { data, error } = await tryExecute(this, DocumentService.getDocumentById({ path: { id: entityKey } }));
+            if (error) {
+                console.error('Error fetching document:', error);
+                return;
+            }
+            if (!data) return;
+            return data.variants[0].name;
+        } catch (error) {
+            console.error('Error in getDocument:', error);
+            return;
+        }
+    }
 
     render() {
         console.log(this.data);
@@ -118,7 +125,7 @@ export class PageNotFoundModalElement extends UmbModalBaseElement<PageNotFoundMo
                         <p>${this._getInstructionMessage()}</p>
                         <label>Selected 404 Page:</label>
                         <umb-input-document min=1 max=1
-                            .value=${this._selection}
+                            .value=${this._selection ?? undefined}
                             @change=${this.#selectionChanged}>
                         </umb-input-document>
                     </div>

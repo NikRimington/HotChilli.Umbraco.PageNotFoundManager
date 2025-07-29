@@ -26,46 +26,53 @@ export type PageNotFoundRequest = {
 };
 
 export type GetApiV1HcsGetNotFoundData = {
-    pageId?: string;
+    body?: never;
+    path?: never;
+    query?: {
+        pageId?: string;
+    };
+    url: '/api/v1/hcs/get-not-found';
 };
 
-export type GetApiV1HcsGetNotFoundResponse = PageNotFoundDetails;
+export type GetApiV1HcsGetNotFoundErrors = {
+    /**
+     * The resource is protected and requires an authentication token
+     */
+    401: unknown;
+};
+
+export type GetApiV1HcsGetNotFoundResponses = {
+    /**
+     * OK
+     */
+    200: PageNotFoundDetails;
+};
+
+export type GetApiV1HcsGetNotFoundResponse = GetApiV1HcsGetNotFoundResponses[keyof GetApiV1HcsGetNotFoundResponses];
 
 export type PostApiV1HcsSetNotFoundData = {
-    requestBody?: PageNotFoundRequest;
+    body?: PageNotFoundRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/hcs/set-not-found';
 };
 
-export type PostApiV1HcsSetNotFoundResponse = PageNotFoundDetails;
+export type PostApiV1HcsSetNotFoundErrors = {
+    /**
+     * The resource is protected and requires an authentication token
+     */
+    401: unknown;
+};
 
-export type $OpenApiTs = {
-    '/api/v1/hcs/get-not-found': {
-        get: {
-            req: GetApiV1HcsGetNotFoundData;
-            res: {
-                /**
-                 * OK
-                 */
-                200: PageNotFoundDetails;
-                /**
-                 * The resource is protected and requires an authentication token
-                 */
-                401: unknown;
-            };
-        };
-    };
-    '/api/v1/hcs/set-not-found': {
-        post: {
-            req: PostApiV1HcsSetNotFoundData;
-            res: {
-                /**
-                 * OK
-                 */
-                200: PageNotFoundDetails;
-                /**
-                 * The resource is protected and requires an authentication token
-                 */
-                401: unknown;
-            };
-        };
-    };
+export type PostApiV1HcsSetNotFoundResponses = {
+    /**
+     * OK
+     */
+    200: PageNotFoundDetails;
+};
+
+export type PostApiV1HcsSetNotFoundResponse = PostApiV1HcsSetNotFoundResponses[keyof PostApiV1HcsSetNotFoundResponses];
+
+export type ClientOptions = {
+    baseUrl: 'https://localhost:44394' | (string & {});
 };
