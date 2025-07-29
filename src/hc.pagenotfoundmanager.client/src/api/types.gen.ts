@@ -74,5 +74,5 @@ export type PostApiV1HcsSetNotFoundResponses = {
 export type PostApiV1HcsSetNotFoundResponse = PostApiV1HcsSetNotFoundResponses[keyof PostApiV1HcsSetNotFoundResponses];
 
 export type ClientOptions = {
-    baseUrl: 'https://localhost:44394' | (string & {});
+    baseUrl: 'https://localhost:9851' | (string & {});
 };
