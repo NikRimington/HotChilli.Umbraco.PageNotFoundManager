@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Infrastructure.Migrations;
 
 namespace HC.PageNotFoundManager.Migrations;
 
-public class InitialMigration : MigrationBase
+public class InitialMigration : AsyncMigrationBase
 {
     public const string MigrationName = "page-not-found-manager-migration-initial";
 
@@ -16,7 +17,7 @@ public class InitialMigration : MigrationBase
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    protected override void Migrate()
+    protected override Task MigrateAsync()
     {
         logger.LogDebug("Starting migration - {MigrationName}", MigrationName);
 
@@ -24,10 +25,12 @@ public class InitialMigration : MigrationBase
         {
             Create.Table<PageNotFoundInitialMigrationModel>().Do();
         }
+
+        return Task.CompletedTask;
     }
 }
 
-public class MigrateV8DataMigration : MigrationBase
+public class MigrateV8DataMigration : AsyncMigrationBase
 {
     public const string MigrationName = "page-not-found-manager-migration-legacy-data";
 
@@ -39,7 +42,7 @@ public class MigrateV8DataMigration : MigrationBase
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    protected override void Migrate()
+    protected override Task MigrateAsync()
     {
         logger.LogDebug("Starting migration - {MigrationName}", MigrationName);
 
@@ -47,6 +50,8 @@ public class MigrateV8DataMigration : MigrationBase
         {
             MigrateLegacyData();
         }
+
+        return Task.CompletedTask;
     }
 
     private void MigrateLegacyData()

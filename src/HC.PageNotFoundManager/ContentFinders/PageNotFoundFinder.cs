@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using HC.PageNotFoundManager.Config;
 using HC.PageNotFoundManager.Extensions;
+using HC.PageNotFoundManager.Models;
+using Microsoft.Extensions.Options;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Services;
@@ -14,6 +16,7 @@ namespace HC.PageNotFoundManager.ContentFinders;
 public class PageNotFoundFinder : IContentLastChanceFinder
 {
     private readonly IPageNotFoundService config;
+    private readonly PageNotFoundManagerSettings pageNotFoundManagerSettings;
 
     private readonly IDomainService domainService;
 
@@ -26,7 +29,8 @@ public class PageNotFoundFinder : IContentLastChanceFinder
         IUmbracoContextFactory umbracoContextFactory,
         IDocumentUrlService documentUrlService,
         IDocumentNavigationQueryService documentNavigationQueryService,
-        IPageNotFoundService config)
+        IPageNotFoundService config,
+        IOptions<PageNotFoundManagerSettings> pageNotFoundManagerSettings)
     {
         this.domainService = domainService ?? throw new ArgumentNullException(nameof(domainService));
         this.umbracoContextFactory =
@@ -34,6 +38,7 @@ public class PageNotFoundFinder : IContentLastChanceFinder
         this.documentUrlService = documentUrlService;
         this.documentNavigationQueryService = documentNavigationQueryService;
         this.config = config ?? throw new ArgumentNullException(nameof(config));
+        this.pageNotFoundManagerSettings = pageNotFoundManagerSettings.Value ?? throw new ArgumentNullException(nameof(pageNotFoundManagerSettings));
     }
 
     public async Task<bool> TryFindContent(IPublishedRequestBuilder request)
@@ -42,6 +47,9 @@ public class PageNotFoundFinder : IContentLastChanceFinder
         // a route is "/path/to/page" when there is no domain, and "123/path/to/page" when there is a domain, and then 123 is the ID of the node which is the root of the domain
         //get domain name from Uri
         // find umbraco home node for uri's domain, and get the id of the node it is set on
+
+        if (pageNotFoundManagerSettings.ExcludePaths.Any(excludePath => uri.StartsWith(excludePath, StringComparison.OrdinalIgnoreCase)))
+            return false;
 
         var domains = (await domainService.GetAllAsync(true)).ToList();
         var domainRoutePrefixId = string.Empty;

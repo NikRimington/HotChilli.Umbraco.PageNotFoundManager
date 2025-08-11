@@ -1,7 +1,9 @@
-﻿using System.Linq;
-using HC.PageNotFoundManager.Config;
+﻿using HC.PageNotFoundManager.Config;
 using HC.PageNotFoundManager.ContentFinders;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
+using HC.PageNotFoundManager.Models;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Extensions;
@@ -17,6 +19,7 @@ public static class UmbracoBuilderExtensions
             return builder;
         }
 
+        builder.Services.Configure<PageNotFoundManagerSettings>(builder.Config.GetSection(PageNotFoundManagerSettings.Key));
         builder.Services.ConfigureOptions<Backoffice.Swagger.HCSSwaggerGenOptions>();
         builder.Services.AddUnique<IPageNotFoundService, PageNotFoundConfigService>();
         builder.SetContentLastChanceFinder<PageNotFoundFinder>();
