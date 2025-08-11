@@ -23,8 +23,8 @@ public static class UmbracoBuilderExtensions
         builder.Services.ConfigureOptions<Backoffice.Swagger.HCSSwaggerGenOptions>();
         builder.Services.AddUnique<IPageNotFoundService, PageNotFoundConfigService>();
         builder.SetContentLastChanceFinder<PageNotFoundFinder>();
-        builder
-            .AddNotificationHandler<UmbracoApplicationStartingNotification, UmbracoStartingNotificationHandler>();
+        builder            
+            .AddNotificationAsyncHandler<UmbracoApplicationStartingNotification, UmbracoStartingNotificationHandler>();
 
         return builder;
     }
