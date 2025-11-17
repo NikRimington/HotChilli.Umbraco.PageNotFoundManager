@@ -1,5 +1,7 @@
 ﻿
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using HC.PageNotFoundManager.Migrations;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core;
@@ -7,12 +9,13 @@ using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Migrations;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Infrastructure.Migrations;
 using Umbraco.Cms.Infrastructure.Migrations.Upgrade;
 using Umbraco.Cms.Infrastructure.Scoping;
 
 namespace HC.PageNotFoundManager.Startup;
 
-public class UmbracoStartingNotificationHandler : INotificationHandler<UmbracoApplicationStartingNotification>
+public class UmbracoStartingNotificationHandler : INotificationAsyncHandler<UmbracoApplicationStartingNotification>
 {
     private readonly IKeyValueService keyValueService;
 
@@ -39,21 +42,21 @@ public class UmbracoStartingNotificationHandler : INotificationHandler<UmbracoAp
             migrationPlanExecutor ?? throw new ArgumentNullException(nameof(migrationPlanExecutor));
     }
 
-    public void Handle(UmbracoApplicationStartingNotification notification)
+    public async Task HandleAsync(UmbracoApplicationStartingNotification notification, CancellationToken cancellationToken)
     {
-        if (runtimeState.Level < RuntimeLevel.Upgrade)
+       if (runtimeState.Level < RuntimeLevel.Upgrade)
         {
             logger.LogInformation(
                 "Umbraco Runtime is not Run/Upgrade mode, so a database connection is unlikely to be available for migrations");
             return;
         }
 
-        ApplyMigration();
+        await ApplyMigration();
     }
 
-    private void ApplyMigration()
+    private async Task<ExecutedMigrationPlan> ApplyMigration()
     {
         var upgrader = new Upgrader(new PageNotFoundMigrationPlan());
-        upgrader.Execute(migrationPlanExecutor, scopeProvider, keyValueService);
+        return await upgrader.ExecuteAsync(migrationPlanExecutor, scopeProvider, keyValueService);
     }
 }
