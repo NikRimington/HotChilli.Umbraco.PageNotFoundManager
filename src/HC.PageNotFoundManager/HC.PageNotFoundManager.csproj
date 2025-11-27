@@ -2,10 +2,10 @@
 
     <PropertyGroup>
         <Nullable>enable</Nullable>        
-        <AssemblyVersion>16.1.0</AssemblyVersion>
-        <Version>16.1.0</Version>
-        <InformationalVersion>16.0.0</InformationalVersion>
-        <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
+        <AssemblyVersion>17.0.0</AssemblyVersion>
+        <Version>17.0.0</Version>
+        <InformationalVersion>17.0.0</InformationalVersion>
+        <TargetFrameworks>net10.0</TargetFrameworks>
 		<Copyright>(c) $([System.DateTime]::Now.ToString(`yyyy`)) Nik Rimington</Copyright>
         <Authors>Nik Rimington</Authors>
         <ContentTargetFolders>.</ContentTargetFolders>
@@ -29,12 +29,6 @@
         <None Include="../../LICENSE" Pack="true" PackPath="" />
         <None Include="../../ReadMe.md" Pack="true" PackPath="\" />
     </ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-      <PackageReference Include="Umbraco.Cms.Api.Common" Version="[16.0.0, 16.99999.9999)" />
-      <PackageReference Include="Umbraco.Cms.Api.Management" Version="[16.0.0, 16.99999.9999)" />
-      <PackageReference Include="Umbraco.Cms.Web.Website" Version="[16.0.0, 16.99999.9999)" />
-	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
 		<PackageReference Include="Umbraco.Cms.Api.Common" Version="[17.0.0, 17.99999.9999)" />
