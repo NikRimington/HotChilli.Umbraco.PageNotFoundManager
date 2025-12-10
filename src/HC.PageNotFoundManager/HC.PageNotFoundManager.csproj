@@ -5,7 +5,7 @@
         <Version>1.0.0</Version>
         <InformationalVersion>1.0.0</InformationalVersion>
         <TargetFrameworks>net8.0</TargetFrameworks>
-		<Copyright>2023 Nik Rimington</Copyright>
+		<Copyright>2025 Nik Rimington</Copyright>
         <Authors>Nik Rimington</Authors>
         <ContentTargetFolders>.</ContentTargetFolders>
         <Product>HotChilli.Umbraco.PageNotFound</Product>

@@ -18,7 +18,9 @@ namespace HC.PageNotFoundManager.Migrations
         /// </summary>
         protected void DefinePlan()
         {
-            From("{pagenotfound-init-state}").To<InitialMigration>("{pagenotfound-init-complete}");
+            From("{pagenotfound-init-state}").To<InitialMigration>("{pagenotfound-init-complete}")
+                .To("{pagenotfound-legacy-data-complete}")
+                .To("{dropped-legacy-data-migration}");
         }
     }
 }
