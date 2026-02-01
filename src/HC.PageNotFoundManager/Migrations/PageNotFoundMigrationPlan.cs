@@ -17,7 +17,7 @@ public class PageNotFoundMigrationPlan : MigrationPlan
     ///     Defines the plan.
     /// </summary>
     protected void DefinePlan()
-    {
-        From("{pagenotfound-init-state}").To<InitialMigration>("{pagenotfound-init-complete}");
+    {        
+        From("{pagenotfound-init-state}").To("{pagenotfound-legacy-data-complete}").To<InitialMigration>("{pagenotfound-init-complete}");
     }
 }
