@@ -58,23 +58,23 @@ public class PageNotFoundFinder : IContentLastChanceFinder
             if (pageNotFoundManagerSettings.ExcludePaths.Any(excludePath => uri.StartsWith(excludePath, StringComparison.OrdinalIgnoreCase)))
                 return false;
 
-            string? domainRoutePrefixId;
+            int? documentStartNodeId;
             if (request.Domain is null)
             {
-                domainRoutePrefixId = await GetDomain(request);
+                documentStartNodeId = await GetDomain(request);
             }
             else
             {
-                domainRoutePrefixId = request.Domain.ContentId.ToString();
+                documentStartNodeId = request.Domain.ContentId;
             }
 
             using var umbracoContext = umbracoContextFactory.EnsureUmbracoContext();
 
-            var documentKey = documentUrlService.GetDocumentKeyByRoute(domainRoutePrefixId + uri, request.Culture, null, false);
+            var documentKey = documentUrlService.GetDocumentKeyByRoute(uri, request.Culture, documentStartNodeId, false);
             while (documentKey == null && uri.Length > 0)
             {
                 uri = uri.Remove(uri.Length - 1, 1);
-                documentKey = documentUrlService.GetDocumentKeyByRoute(domainRoutePrefixId + uri, request.Culture, null, false);
+                documentKey = documentUrlService.GetDocumentKeyByRoute(uri, request.Culture, documentStartNodeId, false);
             }
 
             var contentNode = documentKey != null ? umbracoContext.UmbracoContext.Content.GetById(documentKey!.Value) : null;
@@ -129,7 +129,7 @@ public class PageNotFoundFinder : IContentLastChanceFinder
     }
 
     //Does not handle relative Domains.
-    private async Task<string?> GetDomain(IPublishedRequestBuilder request)
+    private async Task<int?> GetDomain(IPublishedRequestBuilder request)
     {
         var domains = (await domainService.GetAllAsync(true)).ToList();
 
@@ -150,10 +150,10 @@ public class PageNotFoundFinder : IContentLastChanceFinder
             if (domain != null)
             {
                 // the domain has a RootContentId that we can use as the prefix.
-                return domain.RootContentId.ToString();
+                return domain.RootContentId;
             }
         }
 
-        return string.Empty;
+        return null;
     }
 }
