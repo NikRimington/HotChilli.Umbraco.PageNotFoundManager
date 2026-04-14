@@ -1,9 +1,10 @@
-﻿using HC.PageNotFoundManager.Extensions;
+using HC.PageNotFoundManager.Extensions;
 using HC.PageNotFoundManager.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PublishedCache;
@@ -14,27 +15,29 @@ using Umbraco.Extensions;
 
 namespace HC.PageNotFoundManager.Config;
 
-public class PageNotFoundConfigService : IPageNotFoundService
+public partial class PageNotFoundConfigService : IPageNotFoundService
 {
     private const string CacheKey = "PageNotFoundConfig";
 
     private readonly IAppPolicyCache appPolicyCache;
     private readonly IDocumentNavigationQueryService documentNavigationQueryService;
     private readonly IScopeProvider scopeProvider;
-
     private readonly IUmbracoContextFactory umbracoContextFactory;
+    private readonly ILogger<PageNotFoundConfigService> logger;
 
     public PageNotFoundConfigService(
         IScopeProvider scopeProvider,
         IUmbracoContextFactory umbracoContextFactory,
         IAppPolicyCache appPolicyCache,
-        IDocumentNavigationQueryService documentNavigationQueryService)
+        IDocumentNavigationQueryService documentNavigationQueryService,
+        ILogger<PageNotFoundConfigService> logger)
     {
         this.scopeProvider = scopeProvider ?? throw new ArgumentNullException(nameof(scopeProvider));
         this.umbracoContextFactory =
             umbracoContextFactory ?? throw new ArgumentNullException(nameof(umbracoContextFactory));
         this.appPolicyCache = appPolicyCache ?? throw new ArgumentNullException(nameof(appPolicyCache));
         this.documentNavigationQueryService = documentNavigationQueryService;
+        this.logger = logger;
     }
 
     private List<PageNotFoundDetails> ConfiguredPages
@@ -51,7 +54,14 @@ public class PageNotFoundConfigService : IPageNotFoundService
         using var scope = scopeProvider.CreateScope(autoComplete: true);
         using var umbracoContext = umbracoContextFactory.EnsureUmbracoContext();
         var node = umbracoContext.UmbracoContext.Content?.GetById(nodeId);
-        return node != null && umbracoContext.UmbracoContext.Content != null
+
+        if (node == null)
+        {
+            LogNodeNotFoundById(nodeId);
+            return null;
+        }
+
+        return umbracoContext.UmbracoContext.Content != null
             ? GetNotFoundPage(node, true, umbracoContext.UmbracoContext.Content) : null;
     }
 
@@ -60,13 +70,30 @@ public class PageNotFoundConfigService : IPageNotFoundService
         using var scope = scopeProvider.CreateScope(autoComplete: true);
         using var umbracoContext = umbracoContextFactory.EnsureUmbracoContext();
         var node = umbracoContext.UmbracoContext.Content?.GetById(nodeKey);
-        
-        return node != null && umbracoContext.UmbracoContext.Content != null ? GetNotFoundPage(node, true, umbracoContext.UmbracoContext.Content) : null;
+
+        if (node == null)
+        {
+            LogNodeNotFoundByKey(nodeKey);
+            return null;
+        }
+
+        return umbracoContext.UmbracoContext.Content != null
+            ? GetNotFoundPage(node, true, umbracoContext.UmbracoContext.Content) : null;
     }
 
     private PageNotFoundDetails? GetNotFoundPage(IPublishedContent node, bool fetchInherited, IPublishedContentCache content)
     {
         var x = ConfiguredPages.FirstOrDefault(p => p.PageId == node.Key);
+
+        if (x != null)
+        {
+            LogConfigFound(node.Key, node.Name, x.Explicit404);
+        }
+        else
+        {
+            LogNoConfigForNode(node.Key, node.Name);
+        }
+
         x ??= new PageNotFoundDetails
             {
                 PageId = node.Key,
@@ -78,6 +105,7 @@ public class PageNotFoundConfigService : IPageNotFoundService
 
     public void RefreshCache()
     {
+        LogCacheRefresh();
         appPolicyCache.ClearByKey(CacheKey);
         appPolicyCache.Insert(CacheKey, LoadFromDb);
     }
@@ -92,6 +120,8 @@ public class PageNotFoundConfigService : IPageNotFoundService
 
     public async Task<PageNotFoundDetails> SetNotFoundPage(Guid parentKey, Guid pageNotFoundKey, bool refreshCache)
     {
+        LogSettingNotFoundPage(parentKey, pageNotFoundKey);
+
         using (var scope = scopeProvider.CreateScope())
         {
             var db = scope.Database;
@@ -100,24 +130,25 @@ public class PageNotFoundConfigService : IPageNotFoundService
             {
                 // create the page
                 await db.InsertAsync(new Models.DatabaseModels.PageNotFound { ParentId = parentKey, NotFoundPageId = pageNotFoundKey });
+                LogConfigCreated(parentKey, pageNotFoundKey);
             }
             else if (page != null)
             {
                 if (Guid.Empty.Equals(pageNotFoundKey))
                 {
                     await db.DeleteAsync(page);
+                    LogConfigDeleted(parentKey);
                 }
                 else
                 {
                     // update the existing page
                     page.NotFoundPageId = pageNotFoundKey;
                     db.Update(Models.DatabaseModels.PageNotFound.TableName, "ParentId", page);
+                    LogConfigUpdated(parentKey, pageNotFoundKey);
                 }
             }
 
             scope.Complete();
-
-            
         }
 
         if (refreshCache)
@@ -137,7 +168,7 @@ public class PageNotFoundConfigService : IPageNotFoundService
     {
         using var umbracoContext = umbracoContextFactory.EnsureUmbracoContext();
         var node = umbracoContext.UmbracoContext.Content?.GetById(nodeKey);
-        return node != null && umbracoContext.UmbracoContext.Content != null 
+        return node != null && umbracoContext.UmbracoContext.Content != null
             ? GetAncestor404(node, umbracoContext.UmbracoContext.Content)
             : null;
     }
@@ -146,9 +177,8 @@ public class PageNotFoundConfigService : IPageNotFoundService
     {
         if (node == null)
             return null;
-        //TODO: Need some logic, we don't want the whole tree just the first inherited 404
         var ancestor404 = GetNotFoundPage(node, false, content);
-        
+
         if((ancestor404 == null || !ancestor404.Has404()) && node.TryGetParent(documentNavigationQueryService, content, out var parent) && parent != null)
             return GetAncestor404(parent, content);
         return ancestor404;
@@ -160,10 +190,14 @@ public class PageNotFoundConfigService : IPageNotFoundService
         var sql = scope.SqlContext.Sql().Select("*").From<Models.DatabaseModels.PageNotFound>();
         var pages = scope.Database.Fetch<Models.DatabaseModels.PageNotFound>(sql);
         scope.Complete();
-        return pages.Select(p => new PageNotFoundDetails
+
+        var result = pages.Select(p => new PageNotFoundDetails
         {
             PageId = p.ParentId,
             Explicit404 = p.NotFoundPageId == Guid.Empty ? null : p.NotFoundPageId
         }).ToList();
+
+        LogLoadedFromDb(result.Count);
+        return result;
     }
 }

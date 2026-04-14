@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using HC.PageNotFoundManager.Config;
@@ -14,7 +14,7 @@ using Umbraco.Cms.Core.Web;
 
 namespace HC.PageNotFoundManager.ContentFinders;
 
-public class PageNotFoundFinder : IContentLastChanceFinder
+public partial class PageNotFoundFinder : IContentLastChanceFinder
 {
     private readonly IPageNotFoundService config;
     private readonly PageNotFoundManagerSettings pageNotFoundManagerSettings;
@@ -55,59 +55,84 @@ public class PageNotFoundFinder : IContentLastChanceFinder
             //get domain name from Uri
             // find umbraco home node for uri's domain, and get the id of the node it is set on
 
-            if (pageNotFoundManagerSettings.ExcludePaths.Any(excludePath => uri.StartsWith(excludePath, StringComparison.OrdinalIgnoreCase)))
+            LogRequestReceived(uri, request.Culture);
+
+            var excludePaths = pageNotFoundManagerSettings.ExcludePaths;
+            if (excludePaths.Any(excludePath => uri.StartsWith(excludePath, StringComparison.OrdinalIgnoreCase)))
+            {
+                var matchedPath = excludePaths.First(p => uri.StartsWith(p, StringComparison.OrdinalIgnoreCase));
+                LogExcludedPath(uri, matchedPath, string.Join(", ", excludePaths.Select(p => $"\"{p}\"")));
                 return false;
+            }
 
             int? documentStartNodeId;
             if (request.Domain is null)
             {
                 documentStartNodeId = await GetDomain(request);
+                LogDomainResolved(documentStartNodeId);
             }
             else
             {
                 documentStartNodeId = request.Domain.ContentId;
+                LogDomainFromRequest(request.Domain.Name, documentStartNodeId);
             }
 
             using var umbracoContext = umbracoContextFactory.EnsureUmbracoContext();
 
             var documentKey = documentUrlService.GetDocumentKeyByRoute(uri, request.Culture, documentStartNodeId, false);
+
             while (documentKey == null && uri.Length > 0)
             {
                 uri = uri.Remove(uri.Length - 1, 1);
                 documentKey = documentUrlService.GetDocumentKeyByRoute(uri, request.Culture, documentStartNodeId, false);
             }
 
+            LogRouteResolution(request.AbsolutePathDecoded, uri, documentKey);
+
             var contentNode = documentKey != null ? umbracoContext.UmbracoContext.Content.GetById(documentKey!.Value) : null;
             if (contentNode == null)
             {
+                LogNoContentNodeFound(request.AbsolutePathDecoded);
                 return false;
             }
 
+            LogContentNodeFound(contentNode.Name, contentNode.Key);
+
             var nfp = config.GetNotFoundPage(documentKey!.Value);
             var nfpKey = nfp?.Explicit404 ?? nfp?.Inherited404?.Explicit404 ?? Guid.Empty;
+
+            LogNotFoundConfig(contentNode.Key, nfp?.Explicit404, nfp?.Inherited404?.Explicit404, nfpKey);
+
             var content = umbracoContext.UmbracoContext.Content.GetById(nfpKey);
 
             while (content == null && contentNode.TryGetParent(documentNavigationQueryService,
                 umbracoContext.UmbracoContext.Content, out var parent) && parent != null)
             {
                 contentNode = parent;
+                LogWalkingToParent(contentNode.Name, contentNode.Key);
+
                 nfp = config.GetNotFoundPage(contentNode.Key);
                 nfpKey = nfp?.Explicit404 ?? nfp?.Inherited404?.Explicit404 ?? Guid.Empty;
+
+                LogNotFoundConfig(contentNode.Key, nfp?.Explicit404, nfp?.Inherited404?.Explicit404, nfpKey);
+
                 content = umbracoContext.UmbracoContext.Content.GetById(nfpKey);
             }
 
             if (content == null)
             {
+                LogNo404PageConfigured(request.AbsolutePathDecoded);
                 return false;
             }
 
+            LogServing404Page(content.Name, content.Key, request.AbsolutePathDecoded);
             request.SetResponseStatus(404);
             request.SetPublishedContent(content);
             return true;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred in PageNotFoundFinder while trying to find content for request {RequestUri}", request.Uri);
+            LogError(ex, request.Uri);
             return false;
         }
     }
@@ -149,9 +174,15 @@ public class PageNotFoundFinder : IContentLastChanceFinder
 
             if (domain != null)
             {
-                // the domain has a RootContentId that we can use as the prefix.
+                LogDomainMatched(domain.DomainName, domain.RootContentId);
                 return domain.RootContentId;
             }
+
+            LogNoDomainMatched(domains.Count);
+        }
+        else
+        {
+            LogNoDomainsConfigured();
         }
 
         return null;
