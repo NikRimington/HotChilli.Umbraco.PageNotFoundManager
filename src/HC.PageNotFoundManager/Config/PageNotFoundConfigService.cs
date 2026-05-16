@@ -103,6 +103,9 @@ public partial class PageNotFoundConfigService : IPageNotFoundService
         return x;
     }
 
+    public bool IsUsedAsNotFoundPage(Guid pageKey) =>
+        ConfiguredPages.Any(p => p.Explicit404.HasValue && p.Explicit404.Value == pageKey);
+
     public void RefreshCache()
     {
         LogCacheRefresh();

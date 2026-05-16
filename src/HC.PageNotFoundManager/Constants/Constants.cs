@@ -12,4 +12,7 @@ public static class Constants
 
     public const string Name = "Page not found manager";
     public const string ApiAlias = "page-not-found-manager";
+
+    public const string RelationTypeAlias = "pageNotFoundManagerRelated";
+    public const string RelationTypeName = "Page Not Found Manager - 404 page reference";
 }

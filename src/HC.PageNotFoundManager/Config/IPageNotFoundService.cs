@@ -10,6 +10,8 @@ public interface IPageNotFoundService
 
     PageNotFoundDetails? GetNotFoundPage(Guid nodeKey);
 
+    bool IsUsedAsNotFoundPage(Guid pageKey);
+
     void RefreshCache();
 
     Task<PageNotFoundDetails> SetNotFoundPage(int parentId, int pageNotFoundId, bool refreshCache);
