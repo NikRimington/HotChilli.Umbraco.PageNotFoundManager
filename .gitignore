@@ -363,3 +363,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /src/.idea
+
+# Test sites — only Umb13 is tracked on this branch
+src/TestSites/*/
+!src/TestSites/PNFM-Umb13TestSite/
