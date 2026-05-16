@@ -15,13 +15,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set alpha version (dev branches)
-        if: startsWith(github.ref, 'refs/heads/dev/')
+      - name: Set v2 alpha version (dev/v2)
+        if: github.ref == 'refs/heads/dev/v2'
         shell: bash
         run: echo "VERSION=2.0.0-alpha${{ github.run_number }}" >> $GITHUB_ENV
 
+      - name: Set alpha version (other dev branches)
+        if: startsWith(github.ref, 'refs/heads/dev/') && github.ref != 'refs/heads/dev/v2'
+        shell: bash
+        run: echo "VERSION=0.0.0-alpha${{ github.run_number }}" >> $GITHUB_ENV
+
       - name: Set pre-release version (develop)
-        if: "!startsWith(github.ref, 'refs/heads/dev/')"
+        if: github.ref == 'refs/heads/develop'
         shell: bash
         run: echo "VERSION=0.1.0-pre${{ github.run_number }}" >> $GITHUB_ENV
 
@@ -29,8 +34,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: src/hc.pagenotfoundmanager.client/package-lock.json
 
       - name: Install frontend dependencies
         working-directory: src/hc.pagenotfoundmanager.client
