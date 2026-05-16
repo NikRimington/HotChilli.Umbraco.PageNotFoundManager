@@ -1,4 +1,5 @@
-﻿using HC.PageNotFoundManager.Config;
+﻿using HC.PageNotFoundManager.Backoffice;
+using HC.PageNotFoundManager.Config;
 using HC.PageNotFoundManager.ContentFinders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,8 +24,10 @@ public static class UmbracoBuilderExtensions
         builder.Services.ConfigureOptions<Backoffice.Swagger.HCSSwaggerGenOptions>();
         builder.Services.AddUnique<IPageNotFoundService, PageNotFoundConfigService>();
         builder.SetContentLastChanceFinder<PageNotFoundFinder>();
-        builder            
-            .AddNotificationAsyncHandler<UmbracoApplicationStartingNotification, UmbracoStartingNotificationHandler>();
+        builder
+            .AddNotificationAsyncHandler<UmbracoApplicationStartingNotification, UmbracoStartingNotificationHandler>()
+            .AddNotificationAsyncHandler<ContentDeletingNotification, ContentDeletingNotificationHandler>()
+            .AddNotificationAsyncHandler<ContentMovingToRecycleBinNotification, ContentMovingToRecycleBinNotificationHandler>();
 
         return builder;
     }
