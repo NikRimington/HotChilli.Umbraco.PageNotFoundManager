@@ -39,4 +39,4 @@ jobs:
         run: dotnet build src\HC.PageNotFoundManager\HC.PageNotFoundManager.csproj --configuration Release /p:Version=${{ env.VERSION }}
 
       - name: Pack project
-        run: dotnet pack src\PageNotFoundManager.slnx --no-build --output nupkgs /p:PackageVersion=${{ env.VERSION }}
+        run: dotnet pack src\HC.PageNotFoundManager\HC.PageNotFoundManager.csproj --no-build --output nupkgs /p:PackageVersion=${{ env.VERSION }}
