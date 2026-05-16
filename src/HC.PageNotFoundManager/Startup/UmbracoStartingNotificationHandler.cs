@@ -1,10 +1,12 @@
 ﻿
 using System;
 using HC.PageNotFoundManager.Migrations;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Migrations;
+using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Migrations.Upgrade;
@@ -24,12 +26,15 @@ namespace HC.PageNotFoundManager.Startup
 
         private readonly IScopeProvider scopeProvider;
 
+        private readonly IServiceScopeFactory serviceScopeFactory;
+
         public UmbracoStartingNotificationHandler(
             ILogger<UmbracoStartingNotificationHandler> logger,
             IRuntimeState runtimeState,
             IScopeProvider scopeProvider,
             IKeyValueService keyValueService,
-            IMigrationPlanExecutor migrationPlanExecutor)
+            IMigrationPlanExecutor migrationPlanExecutor,
+            IServiceScopeFactory serviceScopeFactory)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.runtimeState = runtimeState ?? throw new ArgumentNullException(nameof(runtimeState));
@@ -37,6 +42,7 @@ namespace HC.PageNotFoundManager.Startup
             this.keyValueService = keyValueService ?? throw new ArgumentNullException(nameof(keyValueService));
             this.migrationPlanExecutor =
                 migrationPlanExecutor ?? throw new ArgumentNullException(nameof(migrationPlanExecutor));
+            this.serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
         }
 
         public void Handle(UmbracoApplicationStartingNotification notification)
@@ -49,12 +55,38 @@ namespace HC.PageNotFoundManager.Startup
             }
 
             ApplyMigration();
+            EnsureRelationType();
         }
 
         private void ApplyMigration()
         {
             var upgrader = new Upgrader(new PageNotFoundMigrationPlan());
             upgrader.Execute(migrationPlanExecutor, scopeProvider, keyValueService);
+        }
+
+        private void EnsureRelationType()
+        {
+            using var scope = serviceScopeFactory.CreateScope();
+            var relationService = scope.ServiceProvider.GetRequiredService<IRelationService>();
+
+            var existing = relationService.GetRelationTypeByAlias(Constants.Constants.RelationTypeAlias);
+            if (existing is null)
+            {
+                var relationType = new RelationType(
+                    Constants.Constants.RelationTypeName,
+                    Constants.Constants.RelationTypeAlias,
+                    false,
+                    Umbraco.Cms.Core.Constants.ObjectTypes.Document,
+                    Umbraco.Cms.Core.Constants.ObjectTypes.Document,
+                    true);
+                relationService.Save(relationType);
+                logger.LogInformation("Page Not Found Manager: created relation type '{Alias}'.", Constants.Constants.RelationTypeAlias);
+            }
+            else if (existing is RelationType concreteType && !concreteType.IsDependency)
+            {
+                concreteType.IsDependency = true;
+                relationService.Save(concreteType);
+            }
         }
     }
 }

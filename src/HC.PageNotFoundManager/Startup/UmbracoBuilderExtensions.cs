@@ -23,8 +23,8 @@ namespace HC.PageNotFoundManager.Startup
             builder.ManifestFilters().Append<PageNotFoundManifestFilter>();
 
             builder.AddNotificationHandler<MenuRenderingNotification, MenuRenderingNotificationHandler>();
-            builder
-                .AddNotificationHandler<UmbracoApplicationStartingNotification, UmbracoStartingNotificationHandler>();
+            builder.AddNotificationHandler<UmbracoApplicationStartingNotification, UmbracoStartingNotificationHandler>();
+            builder.AddNotificationHandler<ContentDeletingNotification, ContentDeletingNotificationHandler>();
 
             return builder;
         }

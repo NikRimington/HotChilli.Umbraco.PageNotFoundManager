@@ -9,5 +9,9 @@
         public const string MenuAlias = "pageNotFoundManagement";
 
         public const string MenuLabel = "Manage 404 Page";
+
+        public const string RelationTypeAlias = "pageNotFoundManagerRelated";
+
+        public const string RelationTypeName = "Page Not Found Manager - 404 page reference";
     }
 }

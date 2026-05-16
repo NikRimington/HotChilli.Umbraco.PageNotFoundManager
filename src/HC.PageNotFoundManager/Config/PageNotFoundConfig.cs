@@ -56,6 +56,9 @@ namespace HC.PageNotFoundManager.Config
             return page != null ? page.Id : 0;
         }
 
+        public bool IsUsedAsNotFoundPage(Guid pageKey) =>
+            ConfiguredPages.Any(p => p.NotFoundPageId == pageKey);
+
         public void RefreshCache()
         {
             appPolicyCache.ClearByKey(CacheKey);
@@ -119,6 +122,8 @@ namespace HC.PageNotFoundManager.Config
         int GetNotFoundPage(int parentId);
 
         int GetNotFoundPage(Guid parentKey);
+
+        bool IsUsedAsNotFoundPage(Guid pageKey);
 
         void RefreshCache();
 
