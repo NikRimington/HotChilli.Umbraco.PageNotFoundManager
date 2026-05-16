@@ -25,6 +25,7 @@ namespace HC.PageNotFoundManager.Startup
             builder.AddNotificationHandler<MenuRenderingNotification, MenuRenderingNotificationHandler>();
             builder.AddNotificationHandler<UmbracoApplicationStartingNotification, UmbracoStartingNotificationHandler>();
             builder.AddNotificationHandler<ContentDeletingNotification, ContentDeletingNotificationHandler>();
+            builder.AddNotificationHandler<ContentMovingToRecycleBinNotification, ContentMovingToRecycleBinNotificationHandler>();
 
             return builder;
         }
