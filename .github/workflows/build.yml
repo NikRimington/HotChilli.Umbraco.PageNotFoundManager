@@ -7,46 +7,40 @@ on:
     branches: ["develop"]
   workflow_dispatch:
 
-env:
-  VERSION: 0.0.0
-
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set Version Variable from tag
-        if: ${{ github.ref_type == 'tag' }}
-        env:
-          TAG: ${{ github.ref_name }}
-        run: echo "VERSION=${TAG#v}-beta${{github.run_number}}" >> $GITHUB_ENV
+      - name: Set pre-release version
+        shell: bash
+        run: echo "VERSION=0.1.0-pre${{ github.run_number }}" >> $GITHUB_ENV
 
-      - name: Set Version Variable from tag
-        if: ${{ !(github.ref_type == 'tag') }}
-        env:
-          TAG: ${{ github.ref_name }}
-        run: echo "VERSION=0.1.0-pre${{github.run_number}}" >> $GITHUB_ENV
-
-      - name: Setup .NET 6
-        uses: actions/setup-dotnet@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          dotnet-version: 6.0.x
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: src/hc.pagenotfoundmanager.client/package-lock.json
 
-      - name: Setup .NET 7
-        uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: 7.0.x
+      - name: Install frontend dependencies
+        working-directory: src/hc.pagenotfoundmanager.client
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: src/hc.pagenotfoundmanager.client
+        run: npm run build
 
       - name: Setup .NET 8
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
       - name: Build project
-        run: dotnet build src\HC.PageNotFoundManager\HC.PageNotFoundManager.csproj --configuration Release /p:Version=$VERSION
+        run: dotnet build src\HC.PageNotFoundManager\HC.PageNotFoundManager.csproj --configuration Release /p:Version=${{ env.VERSION }}
 
       - name: Pack project
-        run: dotnet pack --output  --no-build nupkgs /p:PackageVersion=$VERSION .\src\PageNotFoundManager.sln
+        run: dotnet pack src\PageNotFoundManager.sln --no-build --output nupkgs /p:PackageVersion=${{ env.VERSION }}

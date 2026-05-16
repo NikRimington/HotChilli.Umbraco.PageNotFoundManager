@@ -1,6 +1,6 @@
 name: Build and Release Package
 
-# This action will start when a correctly formatted tag is pushed (e.g. v0.1.0)
+# Triggers when a version tag is pushed (e.g. v1.2.3)
 
 on:
   push:
@@ -13,37 +13,42 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set Version Variable
-      if: ${{ github.ref_type == 'tag' }}
-      env:
-        TAG: ${{ github.ref_name }}
-      run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
+      - name: Set version from tag
+        if: ${{ github.ref_type == 'tag' }}
+        shell: bash
+        env:
+          TAG: ${{ github.ref_name }}
+        run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
 
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: src/hc.pagenotfoundmanager.client/package-lock.json
 
-    - name: Setup .NET 6
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: 6.0.x
-    
-    - name: Setup .NET 7
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: 7.0.x
-  
-    - name: Setup .NET 8
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: 8.0.x
+      - name: Install frontend dependencies
+        working-directory: src/hc.pagenotfoundmanager.client
+        run: npm ci
 
-    - name: Build project
-      run: dotnet build src\HC.PageNotFoundManager\HC.PageNotFoundManager.csproj --configuration Release /p:Version=$VERSION
+      - name: Build frontend
+        working-directory: src/hc.pagenotfoundmanager.client
+        run: npm run build
 
-    - name: Pack project
-      run: dotnet pack --output nupkgs /p:PackageVersion=$VERSION .\src\PageNotFoundManager.sln
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
 
-    - name: upload nuget package
-      if: github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v')
-      run: dotnet nuget push **\*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+      - name: Build project
+        run: dotnet build src\HC.PageNotFoundManager\HC.PageNotFoundManager.csproj --configuration Release /p:Version=${{ env.VERSION }}
+
+      - name: Pack project
+        run: dotnet pack src\PageNotFoundManager.sln --no-build --output nupkgs /p:PackageVersion=${{ env.VERSION }}
+
+      - name: Publish to NuGet
+        if: github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v')
+        run: dotnet nuget push **\*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --skip-duplicate
