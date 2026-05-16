@@ -30,13 +30,13 @@ jobs:
         shell: bash
         run: echo "VERSION=0.1.0-pre${{ github.run_number }}" >> $GITHUB_ENV
 
-      - name: Setup .NET 8
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 9.0.x
 
       - name: Build project
         run: dotnet build src\HC.PageNotFoundManager\HC.PageNotFoundManager.csproj --configuration Release /p:Version=${{ env.VERSION }}
 
       - name: Pack project
-        run: dotnet pack src\PageNotFoundManager.sln --no-build --output nupkgs /p:PackageVersion=${{ env.VERSION }}
+        run: dotnet pack src\PageNotFoundManager.slnx --no-build --output nupkgs /p:PackageVersion=${{ env.VERSION }}

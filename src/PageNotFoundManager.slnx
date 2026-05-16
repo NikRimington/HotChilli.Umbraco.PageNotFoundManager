@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="HC.PageNotFoundManager\HC.PageNotFoundManager.csproj" />
+  <Folder Name="/Solution files/">
+    <File Path="LICENSE" />
+    <File Path=".editorconfig" />
+  </Folder>
+</Solution>
