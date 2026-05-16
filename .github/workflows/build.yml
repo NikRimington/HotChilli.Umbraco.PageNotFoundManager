@@ -2,7 +2,7 @@ name: Build and Pack Only
 
 on:
   push:
-    branches: ["develop"]
+    branches: ["develop", "dev/*"]
   pull_request:
     branches: ["develop"]
   workflow_dispatch:
@@ -15,7 +15,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set pre-release version
+      - name: Set alpha version (dev branches)
+        if: startsWith(github.ref, 'refs/heads/dev/')
+        shell: bash
+        run: echo "VERSION=0.0.0-alpha${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: Set pre-release version (develop)
+        if: "!startsWith(github.ref, 'refs/heads/dev/')"
         shell: bash
         run: echo "VERSION=0.1.0-pre${{ github.run_number }}" >> $GITHUB_ENV
 
