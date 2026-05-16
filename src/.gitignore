@@ -39,5 +39,5 @@
 **/[Uu]mbraco/Logs/*
 **/[Uu]mbraco/mediacache/*
 **/wwwroot/umbraco/*
-# Test sites are committed per-branch; add specific sub-folder ignores here if needed
-# TestSites/
+# Ignore all test sites except PNFM-Umb17TestSite (this branch)
+TestSites/PNFM-Umb13TestSite/

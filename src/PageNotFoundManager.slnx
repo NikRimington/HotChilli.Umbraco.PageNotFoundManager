@@ -1,5 +1,8 @@
 <Solution>
   <Project Path="HC.PageNotFoundManager\HC.PageNotFoundManager.csproj" />
+  <Folder Name="/Test Sites/">
+    <Project Path="TestSites\PNFM-Umb17TestSite\PNFM-Umb17TestSite.csproj" />
+  </Folder>
   <Folder Name="/Solution files/">
     <File Path="LICENSE" />
     <File Path=".editorconfig" />
