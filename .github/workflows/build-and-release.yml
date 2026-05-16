@@ -23,21 +23,6 @@ jobs:
           TAG: ${{ github.ref_name }}
         run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: src/hc.pagenotfoundmanager.client/package-lock.json
-
-      - name: Install frontend dependencies
-        working-directory: src/hc.pagenotfoundmanager.client
-        run: npm ci
-
-      - name: Build frontend
-        working-directory: src/hc.pagenotfoundmanager.client
-        run: npm run build
-
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
         with:

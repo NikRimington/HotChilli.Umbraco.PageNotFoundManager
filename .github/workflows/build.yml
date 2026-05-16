@@ -30,19 +30,6 @@ jobs:
         shell: bash
         run: echo "VERSION=0.1.0-pre${{ github.run_number }}" >> $GITHUB_ENV
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install frontend dependencies
-        working-directory: src/hc.pagenotfoundmanager.client
-        run: npm ci
-
-      - name: Build frontend
-        working-directory: src/hc.pagenotfoundmanager.client
-        run: npm run build
-
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
         with:
