@@ -362,3 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /src/.idea
+
+# Frontend build output — compiled by CI before dotnet build
+src/HC.PageNotFoundManager/wwwroot/*.js
+src/HC.PageNotFoundManager/wwwroot/*.js.map
