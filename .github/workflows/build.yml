@@ -2,7 +2,7 @@ name: Build and Pack Only
 
 on:
   push:
-    branches: ["develop"]
+    branches: ["develop", "dev/*"]
   pull_request:
     branches: ["develop"]
   workflow_dispatch:
@@ -50,4 +50,4 @@ jobs:
         run: dotnet build src\HC.PageNotFoundManager\HC.PageNotFoundManager.csproj --configuration Release /p:Version=$VERSION
 
       - name: Pack project
-        run: dotnet pack --output  --no-build nupkgs /p:PackageVersion=$VERSION .\src\PageNotFoundManager.sln
+        run: dotnet pack src\HC.PageNotFoundManager\HC.PageNotFoundManager.csproj --no-build --output nupkgs /p:PackageVersion=$VERSION

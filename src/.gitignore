@@ -39,4 +39,5 @@
 **/[Uu]mbraco/Logs/*
 **/[Uu]mbraco/mediacache/*
 **/wwwroot/umbraco/*
-**/TestSites
+# Test sites are committed per-branch; add specific sub-folder ignores here if needed
+# TestSites/
