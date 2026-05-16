@@ -3,13 +3,13 @@
 ![Logo](https://raw.githubusercontent.com/NikRimington/HotChilli.Umbraco.PageNotFoundManager/develop/docs/img/logo.png)
 
 [![NuGet](https://img.shields.io/nuget/v/HotChilli.Umbraco.PageNotFound.svg)](https://www.nuget.org/packages/HotChilli.Umbraco.PageNotFound/)
-[![Our Umbraco](https://img.shields.io/badge/our-umbraco-orange.svg)](https://our.umbraco.com/packages/backoffice-extensions/hot-chilli-page-not-found-manager/)
+[![Umbraco Marketplace](https://img.shields.io/badge/umbraco-marketplace-blue.svg)](https://marketplace.umbraco.com/package/hotchilli.umbraco.pagenotfound)
 
 ## Getting Started
 
-Page Not Found Manager supports Umbraco v9 RC1+.
+Page Not Found Manager supports Umbraco v13+.
 
-Umbraco v9 Packages are only available via Nuget, although there is a page on [Our.Umbraco.com](https://our.umbraco.com/packages/backoffice-extensions/hot-chilli-page-not-found-manager/) to aid discoverability.
+Packages are available via NuGet, with a listing on the [Umbraco Marketplace](https://marketplace.umbraco.com/package/hotchilli.umbraco.pagenotfound) for discoverability.
 
 ## Installation
 
@@ -19,17 +19,17 @@ To [install from NuGet](https://www.nuget.org/packages/HotChilli.Umbraco.PageNot
 
 ## How to use
 
-*Improved documentation will come in time*
+Once installed, the package registers automatically via an Umbraco Composer. If you need more control over when it loads, an extension method for `IUmbracoBuilder` called `UsePageNotFoundManager` is also available.
 
-Once the package has been installed there are two approaches to configuration. Out of the box, it will be loaded via an Umbraco Composer, but if you wish to have more control over when it loads, there is an extension method for `IUmbracoBuilder` called `UsePageNotFoundManager`.
+Once running, a "Manage 404 Page" action appears on content nodes in the backoffice. This opens a dialog to assign a 404 page for that node and its children, allowing different 404 pages to be configured for different parts of the website.
 
-Once installed and running, Page Not Found Manager extends the "Do Something Else" context menu with a new entry for picking a 404 page off of a content node.
+### Relation Tracking
 
-This allows for multiple different 404 pages to be configured for different parts of the website.
+When a 404 page is assigned, the package creates a native Umbraco relation (`pageNotFoundManagerRelated`) between the content node and its configured 404 page. This means the 404 page will appear as a tracked reference in the backoffice, preventing accidental deletion without warning.
 
-## Future Plans
+### Health Check
 
-There is currently a plan to investigate and see if this same 404 page can be served for missing media items. In IIS, this would fall back to the default 404 page from IIS but I'm yet to understand this pipeline and if this is possible - I'm open to PR's and suggestions on improvements as well.
+A health check is included under the "Page Not Found Manager" group in the Umbraco health check dashboard. It verifies that all configured 404 page references point to content nodes that still exist. If any orphaned references are found (e.g. the 404 page was deleted), the health check reports them and provides an action to remove them automatically.
 
 ## Special Thanks
 
