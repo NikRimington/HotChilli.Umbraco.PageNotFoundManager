@@ -2,13 +2,10 @@ name: Build and Pack Only
 
 on:
   push:
-    branches: ["develop", "dev/*"]
+    branches: ["dev/umbv17"]
   pull_request:
-    branches: ["develop"]
+    branches: ["dev/umbv17"]
   workflow_dispatch:
-
-env:
-  VERSION: 0.0.0
 
 jobs:
   build:
@@ -18,17 +15,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set Version Variable from tag
-        if: ${{ github.ref_type == 'tag' }}
-        env:
-          TAG: ${{ github.ref_name }}
-        run: echo "VERSION=${TAG#v}-beta${{github.run_number}}" >> $GITHUB_ENV
-
-      - name: Set Version Variable from tag
-        if: ${{ !(github.ref_type == 'tag') }}
-        env:
-          TAG: ${{ github.ref_name }}
-        run: echo "VERSION=0.1.0-pre${{github.run_number}}" >> $GITHUB_ENV
+      - name: Set alpha version
+        shell: bash
+        run: echo "VERSION=17.0.0-alpha${{ github.run_number }}" >> $GITHUB_ENV
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -47,7 +36,7 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Build project
-        run: dotnet build src\HC.PageNotFoundManager\HC.PageNotFoundManager.csproj --configuration Release /p:Version=$VERSION
+        run: dotnet build src\HC.PageNotFoundManager\HC.PageNotFoundManager.csproj --configuration Release /p:Version=${{ env.VERSION }}
 
       - name: Pack project
-        run: dotnet pack src\HC.PageNotFoundManager\HC.PageNotFoundManager.csproj --no-build --output nupkgs /p:PackageVersion=$VERSION
+        run: dotnet pack src\HC.PageNotFoundManager\HC.PageNotFoundManager.csproj --no-build --output nupkgs /p:PackageVersion=${{ env.VERSION }}
