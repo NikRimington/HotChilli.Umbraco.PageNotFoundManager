@@ -2,9 +2,9 @@ name: Build and Pack Only
 
 on:
   push:
-    branches: ["dev/umbv17"]
+    branches: ["dev/umbv18"]
   pull_request:
-    branches: ["dev/umbv17"]
+    branches: ["dev/umbv18"]
   workflow_dispatch:
 
 jobs:
@@ -17,12 +17,12 @@ jobs:
 
       - name: Set alpha version
         shell: bash
-        run: echo "VERSION=17.0.0-alpha${{ github.run_number }}" >> $GITHUB_ENV
+        run: echo "VERSION=18.0.0-alpha${{ github.run_number }}" >> $GITHUB_ENV
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
 
       - name: Build frontend
         working-directory: src/hc.pagenotfoundmanager.client

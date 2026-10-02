@@ -9,7 +9,8 @@
 
 - **Version 2.x**: Supports Umbraco 9–13
 - **Version 3.x (beta)**: Supports Umbraco 14 *(see note below)*
-- **Version 17.x**: Supports Umbraco 17
+- **Version 17.x**: Supports Umbraco 17 (see `dev/umbv17`)
+- **Version 18.x**: Supports Umbraco 18
 
 > **Note:** There is also a `dev/umbv15` branch that targets Umbraco 15. This version was never officially released but should work if needed.
 
@@ -26,6 +27,9 @@ PM> Install-Package HotChilli.Umbraco.PageNotFound -Version 3.*-beta
 
 # For Umbraco 17
 PM> Install-Package HotChilli.Umbraco.PageNotFound -Version 17.*
+
+# For Umbraco 18
+PM> Install-Package HotChilli.Umbraco.PageNotFound -Version 18.*
 ```
 
 ## Usage
@@ -47,7 +51,8 @@ A health check is included under the "Page Not Found Manager" group in the Umbra
 - `dev/v2`: Umbraco 9–13 (stable)
 - `dev/v3`: Umbraco 14 (beta)
 - `dev/umbv15`: Umbraco 15 (unreleased, but should work)
-- `dev/umbv17`: Umbraco 17 (active development)
+- `dev/umbv17`: Umbraco 17
+- `dev/umbv18`: Umbraco 18 (active development)
 
 ## Special Thanks
 

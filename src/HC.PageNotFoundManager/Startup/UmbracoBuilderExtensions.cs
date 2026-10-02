@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using HC.PageNotFoundManager.Models;
+using Umbraco.Cms.Api.Common.OpenApi;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Extensions;
@@ -21,7 +22,7 @@ public static class UmbracoBuilderExtensions
         }
 
         builder.Services.Configure<PageNotFoundManagerSettings>(builder.Config.GetSection(PageNotFoundManagerSettings.Key));
-        builder.Services.ConfigureOptions<Backoffice.Swagger.HCSSwaggerGenOptions>();
+        builder.AddBackOfficeOpenApiDocument("hcs", document => document.WithTitle("Hot Chilli Api"));
         builder.Services.AddUnique<IPageNotFoundService, PageNotFoundConfigService>();
         builder.SetContentLastChanceFinder<PageNotFoundFinder>();
         builder
