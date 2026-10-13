@@ -5,7 +5,7 @@ import type { UmbInputDocumentElement } from "@umbraco-cms/backoffice/document";
 import { DocumentService } from '@umbraco-cms/backoffice/external/backend-api';
 import { PageNotFoundModalData, PageNotFoundModalValue } from "./pagenotfound.modal.token.ts";
 import { PageNotFoundManagerService } from "../api/sdk.gen.ts";
-import type { PostApiV1HcsSetNotFoundData } from '../api/types.gen';
+import type { PostHcsSetNotFoundData } from '../api/types.gen';
 
 @customElement('page-not-found-modal')
 export class PageNotFoundModalElement extends UmbModalBaseElement<PageNotFoundModalData, PageNotFoundModalValue>
@@ -50,7 +50,7 @@ export class PageNotFoundModalElement extends UmbModalBaseElement<PageNotFoundMo
     }
 
     private async handleSave() {
-        const PostApiV1HcsSetNotFoundData: PostApiV1HcsSetNotFoundData = {
+        const PostHcsSetNotFoundData: PostHcsSetNotFoundData = {
             body: {
                 parentId: this.data?.entityKey ?? "",
                 notFoundPageId: this._selection
@@ -58,7 +58,7 @@ export class PageNotFoundModalElement extends UmbModalBaseElement<PageNotFoundMo
             url: '/api/v1/hcs/set-not-found'
         };
 
-        var res = await PageNotFoundManagerService.postApiV1HcsSetNotFound(PostApiV1HcsSetNotFoundData);
+        var res = await PageNotFoundManagerService.postHcsSetNotFound(PostHcsSetNotFoundData);
 
         console.log(res);
 

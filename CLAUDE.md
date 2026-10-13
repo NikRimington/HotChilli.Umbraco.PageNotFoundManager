@@ -6,17 +6,17 @@ Guidance for Claude Code working in this repository.
 
 HotChilli.Umbraco.PageNotFoundManager — Umbraco CMS package letting administrators configure custom 404 pages per content node. Adds a "404 Manager" context menu action on document nodes. Child nodes inherit 404 config from ancestors unless explicitly overridden.
 
-**Version branches:** `dev/v2` (Umbraco 9-13), `dev/v3` (Umbraco 14), `dev/umbv15`, `dev/umbv17` (current). Main dev branch: `develop`.
+**Version branches:** `dev/v2` (Umbraco 9-13), `dev/v3` (Umbraco 14), `dev/umbv15`, `dev/umbv17`, `dev/umbv18` (current). Main dev branch: `develop`.
 
 ## Build
 
 ### Backend (.NET)
 ```bash
-dotnet build src/PageNotFoundManager.sln --configuration Release
+dotnet build src/PageNotFoundManager.slnx --configuration Release
 dotnet pack src/HC.PageNotFoundManager/HC.PageNotFoundManager.csproj --configuration Release
 ```
 
-### Frontend (Vite/Lit) — Node.js 22 required
+### Frontend (Vite/Lit) — Node.js 24.13+ required
 ```bash
 cd src/hc.pagenotfoundmanager.client
 npm install

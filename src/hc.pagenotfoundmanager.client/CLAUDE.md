@@ -1,6 +1,6 @@
 # Frontend — hc.pagenotfoundmanager.client
 
-TypeScript / Lit 3 / Vite 6. Builds to `../HC.PageNotFoundManager/wwwroot/` (gitignored — never commit build output).
+TypeScript 6 / Lit 3 / Vite 8. Builds to `../HC.PageNotFoundManager/wwwroot/` (gitignored — never commit build output).
 
 ## Key Files
 

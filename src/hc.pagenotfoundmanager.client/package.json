@@ -4,24 +4,21 @@
   "version": "0.0.0",
   "type": "module",
   "engines": {
-    "node": ">=22 <23"
+    "node": ">=24.13"
   },
   "scripts": {
     "build": "tsc && vite build",
     "watch": "vite build --watch",
-   "generate-client": "node scripts/generate-openapi.js http://localhost:9851/umbraco/swagger/hcs/swagger.json?urls.primaryName=Hot+Chilli+Api"
+    "generate-client": "node scripts/generate-openapi.js http://localhost:41967/umbraco/openapi/hcs.json"
   },
   "dependencies": {
-    "lit": "^3.3.1"
+    "lit": "^3.3.3"
   },
   "devDependencies": {
-    "@hey-api/client-fetch": "^0.12.0",
-    "@hey-api/openapi-ts": "^0.66.7",
-    "@umbraco-cms/backoffice": "^*",
-    "chalk": "^5.4.1",
-    "cross-env": "^7.0.3",
-    "node-fetch": "^3.3.2",
-    "typescript": "^5.8.3",
-    "vite": "^6.3.4"
+    "@hey-api/openapi-ts": "^0.99.0",
+    "@umbraco-cms/backoffice": "^18.0.0",
+    "chalk": "^6.0.1",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.4"
   }
 }

@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import chalk from 'chalk';
 import { createClient, defaultPlugins } from '@hey-api/openapi-ts';
 
@@ -43,7 +42,11 @@ fetch(swaggerUrl).then(async (response) => {
       },
       {
         name: '@hey-api/sdk',
-        asClass: true
+        operations: {
+          strategy: 'byTags',
+          containerName: '{{name}}Service',
+          methods: 'static'
+        }
       }
     ],
   });
