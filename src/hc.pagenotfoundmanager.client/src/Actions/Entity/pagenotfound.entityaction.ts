@@ -4,7 +4,7 @@ import { UmbEntityActionArgs, UmbEntityActionBase } from "@umbraco-cms/backoffic
 import { UMB_MODAL_MANAGER_CONTEXT, UmbModalManagerContext } from "@umbraco-cms/backoffice/modal";
 import { PageNotFound_MODAL, PageNotFoundModalValue } from "../../Modals/pagenotfound.modal.token.ts";
 import { PageNotFoundManagerService } from "../../api/sdk.gen.ts";
-import type { GetApiV1HcsGetNotFoundData } from '../../api/types.gen';
+import type { GetHcsGetNotFoundData } from '../../api/types.gen';
 import type {
 	UmbNotificationColor,
 	UmbNotificationOptions,
@@ -47,13 +47,13 @@ export class PageNotFoundEntityAction extends UmbEntityActionBase<never> {
             throw new Error('The document unique identifier is missing');
         }
 
-        const GetApiV1HcsGetNotFoundData: GetApiV1HcsGetNotFoundData = {
+        const GetHcsGetNotFoundData: GetHcsGetNotFoundData = {
             query: {
                 pageId: this.args.unique,
             },
             url: '/api/v1/hcs/get-not-found'
         };
-        var currentNotFound = await tryExecute(this, PageNotFoundManagerService.getApiV1HcsGetNotFound(GetApiV1HcsGetNotFoundData ));
+        var currentNotFound = await tryExecute(this, PageNotFoundManagerService.getHcsGetNotFound(GetHcsGetNotFoundData ));
 
         //The modal does NOT return any data when closed (it does not submit)
         const modal = this.#modalManagerContext?.open(this, PageNotFound_MODAL, {
