@@ -12,16 +12,11 @@ export const onInit: UmbEntryPointOnInit = (_host, _extensionRegistry) => {
         ...modalManifests,
     ]);
 
-    _host.consumeContext(UMB_AUTH_CONTEXT, async (authContext) => {
-    // Get the token info from Umbraco
-    const config = authContext?.getOpenApiConfiguration();
-
-    client.setConfig({
-      auth: config?.token ?? undefined,
-      baseUrl: config?.base ?? "",
-      credentials: config?.credentials ?? "same-origin",
+    _host.consumeContext(UMB_AUTH_CONTEXT, (authContext) => {
+        // Sets baseUrl, credentials and the auth callback, and binds Umbraco's default
+        // interceptors (401 re-login, problem details mapping, server notifications).
+        authContext?.configureClient(client);
     });
-  });
     // We can register many manifests at once via code 
     // as opposed to a long umbraco-package.json file
     // _extensionRegistry.registerMany([

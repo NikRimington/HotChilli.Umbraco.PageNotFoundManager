@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetHcsGetNotFoundData, GetHcsGetNotFoundResponses, PostHcsSetNotFoundData, PostHcsSetNotFoundResponses } from './types.gen';
+import type { GetHcsGetNotFoundData, GetHcsGetNotFoundErrors, GetHcsGetNotFoundResponses, PostHcsSetNotFoundData, PostHcsSetNotFoundErrors, PostHcsSetNotFoundResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -19,12 +19,17 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 };
 
 export class PageNotFoundManagerService {
-    public static getHcsGetNotFound<ThrowOnError extends boolean = false>(options?: Options<GetHcsGetNotFoundData, ThrowOnError>): RequestResult<GetHcsGetNotFoundResponses, unknown, ThrowOnError> {
-        return (options?.client ?? client).get<GetHcsGetNotFoundResponses, unknown, ThrowOnError>({ url: '/api/v1/hcs/get-not-found', ...options });
+    public static getHcsGetNotFound<ThrowOnError extends boolean = false>(options?: Options<GetHcsGetNotFoundData, ThrowOnError>): RequestResult<GetHcsGetNotFoundResponses, GetHcsGetNotFoundErrors, ThrowOnError> {
+        return (options?.client ?? client).get<GetHcsGetNotFoundResponses, GetHcsGetNotFoundErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/hcs/get-not-found',
+            ...options
+        });
     }
     
-    public static postHcsSetNotFound<ThrowOnError extends boolean = false>(options: Options<PostHcsSetNotFoundData, ThrowOnError>): RequestResult<PostHcsSetNotFoundResponses, unknown, ThrowOnError> {
-        return (options.client ?? client).post<PostHcsSetNotFoundResponses, unknown, ThrowOnError>({
+    public static postHcsSetNotFound<ThrowOnError extends boolean = false>(options: Options<PostHcsSetNotFoundData, ThrowOnError>): RequestResult<PostHcsSetNotFoundResponses, PostHcsSetNotFoundErrors, ThrowOnError> {
+        return (options.client ?? client).post<PostHcsSetNotFoundResponses, PostHcsSetNotFoundErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
             url: '/api/v1/hcs/set-not-found',
             ...options,
             headers: {

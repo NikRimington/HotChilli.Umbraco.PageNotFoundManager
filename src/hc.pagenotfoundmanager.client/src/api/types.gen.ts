@@ -24,6 +24,13 @@ export type GetHcsGetNotFoundData = {
     url: '/api/v1/hcs/get-not-found';
 };
 
+export type GetHcsGetNotFoundErrors = {
+    /**
+     * The resource is protected and requires an authentication token
+     */
+    401: unknown;
+};
+
 export type GetHcsGetNotFoundResponses = {
     /**
      * OK
@@ -38,6 +45,13 @@ export type PostHcsSetNotFoundData = {
     path?: never;
     query?: never;
     url: '/api/v1/hcs/set-not-found';
+};
+
+export type PostHcsSetNotFoundErrors = {
+    /**
+     * The resource is protected and requires an authentication token
+     */
+    401: unknown;
 };
 
 export type PostHcsSetNotFoundResponses = {

@@ -5,6 +5,7 @@ import { UMB_MODAL_MANAGER_CONTEXT, UmbModalManagerContext } from "@umbraco-cms/
 import { PageNotFound_MODAL, PageNotFoundModalValue } from "../../Modals/pagenotfound.modal.token.ts";
 import { PageNotFoundManagerService } from "../../api/sdk.gen.ts";
 import type { GetHcsGetNotFoundData } from '../../api/types.gen';
+import { getErrorMessage } from '../../api-error.ts';
 import type {
 	UmbNotificationColor,
 	UmbNotificationOptions,
@@ -53,7 +54,23 @@ export class PageNotFoundEntityAction extends UmbEntityActionBase<never> {
             },
             url: '/api/v1/hcs/get-not-found'
         };
-        var currentNotFound = await tryExecute(this, PageNotFoundManagerService.getHcsGetNotFound(GetHcsGetNotFoundData ));
+        // throwOnError so tryExecute sees the failure; notifications are handled here because
+        // tryExecute stays silent for 401/403/404, which would leave the user with no feedback.
+        const currentNotFound = await tryExecute(
+            this,
+            PageNotFoundManagerService.getHcsGetNotFound({ ...GetHcsGetNotFoundData, throwOnError: true }),
+            { disableNotifications: true });
+
+        if (currentNotFound.error) {
+            console.error('PNFM: failed to load the current 404 page', currentNotFound.error);
+            this._notificationContext?.peek('danger', {
+                data: {
+                    headline: 'Unable to load 404 settings',
+                    message: getErrorMessage(currentNotFound.error),
+                },
+            });
+            return;
+        }
 
         //The modal does NOT return any data when closed (it does not submit)
         const modal = this.#modalManagerContext?.open(this, PageNotFound_MODAL, {
