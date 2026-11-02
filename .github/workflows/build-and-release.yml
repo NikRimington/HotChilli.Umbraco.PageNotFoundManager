@@ -13,6 +13,14 @@ jobs:
   build:
     runs-on: windows-latest
 
+    # Only release tags can deploy to this environment, and the nuget.org trusted
+    # publishing policy is restricted to it.
+    environment: nuget
+
+    permissions:
+      contents: read
+      id-token: write # OIDC token exchanged for a short-lived NuGet API key
+
     steps:
 
     - name: Set Version Variable
@@ -47,6 +55,12 @@ jobs:
     - name: Pack project
       run: dotnet pack src\HC.PageNotFoundManager\HC.PageNotFoundManager.csproj --no-build --output nupkgs /p:PackageVersion=${{ env.VERSION }}
 
-    - name: Upload NuGet package
-      if: github.ref_type == 'tag'
-      run: dotnet nuget push **\*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+    # The key lasts an hour, so request it right before pushing.
+    - name: NuGet login
+      uses: NuGet/login@v1
+      id: login
+      with:
+        user: ${{secrets.NUGET_USER}}
+
+    - name: Push to NuGet
+      run: dotnet nuget push **\*.nupkg -k ${{steps.login.outputs.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json --skip-duplicate
