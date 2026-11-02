@@ -6,6 +6,7 @@ import { DocumentService } from '@umbraco-cms/backoffice/external/backend-api';
 import { PageNotFoundModalData, PageNotFoundModalValue } from "./pagenotfound.modal.token.ts";
 import { PageNotFoundManagerService } from "../api/sdk.gen.ts";
 import type { PostHcsSetNotFoundData } from '../api/types.gen';
+import { getErrorMessage } from '../api-error.ts';
 
 @customElement('page-not-found-modal')
 export class PageNotFoundModalElement extends UmbModalBaseElement<PageNotFoundModalData, PageNotFoundModalValue>
@@ -18,6 +19,12 @@ export class PageNotFoundModalElement extends UmbModalBaseElement<PageNotFoundMo
 
     @state()
 	private _documentName = '';
+
+    @state()
+	private _saveError?: string;
+
+    @state()
+	private _saving = false;
 
     constructor() {
         super();
@@ -58,9 +65,23 @@ export class PageNotFoundModalElement extends UmbModalBaseElement<PageNotFoundMo
             url: '/api/v1/hcs/set-not-found'
         };
 
-        var res = await PageNotFoundManagerService.postHcsSetNotFound(PostHcsSetNotFoundData);
+        this._saveError = undefined;
+        this._saving = true;
 
-        console.log(res);
+        // throwOnError so tryExecute sees the failure; the error is shown inside the modal
+        // because tryExecute stays silent for 401/403/404.
+        const { error } = await tryExecute(
+            this,
+            PageNotFoundManagerService.postHcsSetNotFound({ ...PostHcsSetNotFoundData, throwOnError: true }),
+            { disableNotifications: true });
+
+        this._saving = false;
+
+        if (error) {
+            console.error('PNFM: failed to save the 404 page', error);
+            this._saveError = getErrorMessage(error);
+            return;
+        }
 
         this.value = {
             currentNodeName: this._documentName,
@@ -130,9 +151,18 @@ export class PageNotFoundModalElement extends UmbModalBaseElement<PageNotFoundMo
                         </umb-input-document>
                     </div>
                 </uui-box>
-                                
+
+                ${this._saveError
+                    ? html`<uui-box headline="The 404 page was not saved">
+                            <p style="color: var(--uui-color-danger);">${this._saveError}</p>
+                        </uui-box>`
+                    : ''}
+
                 <div slot="actions">
-                    <uui-button look="primary" color="positive" id="saveAndClose" label="Close" @click="${this.handleSave}">Save & Close</uui-button>
+                    <uui-button look="primary" color="positive" id="saveAndClose" label="Save & Close"
+                        .state=${this._saving ? 'waiting' : undefined}
+                        ?disabled=${this._saving}
+                        @click="${this.handleSave}">Save & Close</uui-button>
                     <uui-button look="primary" color="danger" id="close" label="Close" @click="${this.handleClose}">Close</uui-button>
                 </div>
             </umb-body-layout>
